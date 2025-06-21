@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装后整理工艺 - AI智能导览平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #7e22ce;
+            --highlight: #ec4899;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--primary);
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(126, 34, 206, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+        
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -10px rgba(236, 72, 153, 0.4);
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--highlight);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, #ec4899, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        .hero-title {
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #7e22ce, #ec4899);
+            border-radius: 2px;
+        }
+        
+        .process-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .process-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .process-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .process-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .step-container {
+            counter-reset: step-counter;
+        }
+        
+        .process-step::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #7e22ce, #ec4899);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        
+        .property-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 3px;
+        }
+        
+        .comparison-bar {
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-tshirt text-2xl text-purple-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">后整理工艺百科</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="nav-link text-gray-300 hover:text-white">工艺概述</a>
+                <a href="#process" class="nav-link text-gray-300 hover:text-white">核心工序</a>
+                <a href="#comparison" class="nav-link text-gray-300 hover:text-white">技术对比</a>
+                <a href="#impact" class="nav-link text-gray-300 hover:text-white">品质影响</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menuToggle" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-indigo-950/95 max-h-0 overflow-hidden transition-all duration-300">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#overview" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">工艺概述</a>
+                <a href="#process" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">核心工序</a>
+                <a href="#comparison" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">技术对比</a>
+                <a href="#impact" class="py-2 text-gray-300 hover:text-white">品质影响</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+        <div class="absolute inset-0 z-0 opacity-20" style="background: url('https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?q=80&w=2070') center/cover;"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white hero-title">探索<span class="highlight">服装后整理</span>的奥秘</h1>
+            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">水洗、熨烫、包装等工艺如何提升成衣品质与价值</p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="#process" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    了解工艺 <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#comparison" class="glassmorphism border border-purple-500/30 hover:border-purple-500 text-gray-200 py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    技术对比
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工艺概述 -->
+    <section id="overview" class="py-16 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">后整理<span class="highlight">工艺概述</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">服装生产的最后环节，决定产品最终品质的关键步骤</p>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-12 fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">什么是服装后整理？</h3>
+                        <p class="text-gray-400 mb-6">服装后整理是指在服装缝制完成后，通过一系列物理和化学处理工艺，改善服装外观、手感、性能和使用价值的过程。</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex">
+                                <div class="bg-purple-500/10 text-purple-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-star text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">提升品质</h4>
+                                    <p class="text-gray-400">改善服装外观、手感和功能性</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="bg-pink-500/10 text-pink-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-tag text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">增加价值</h4>
+                                    <p class="text-gray-400">通过特殊处理提升产品附加值</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="bg-blue-500/10 text-blue-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2">保证质量</h4>
+                                    <p class="text-gray-400">消除生产过程中的瑕疵和问题</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-96 rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?q=80&w=2070" alt="后整理工艺" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+                        <i class="fas fa-water text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">物理整理</h3>
+                    <p class="text-gray-400 mb-4">通过机械作用改变服装外观和手感</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-purple-500 text-xs mt-2 mr-2"></i>
+                            <span>熨烫整型</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-purple-500 text-xs mt-2 mr-2"></i>
+                            <span>机械预缩</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-purple-500 text-xs mt-2 mr-2"></i>
+                            <span>磨毛处理</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mb-4">
+                        <i class="fas fa-flask text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">化学整理</h3>
+                    <p class="text-gray-400 mb-4">使用化学品改善服装性能</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>柔软处理</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>防水防污</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>防皱防缩</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4">
+                        <i class="fas fa-cube text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">包装整理</h3>
+                    <p class="text-gray-400 mb-4">成品包装与质检</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>折叠包装</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>吊牌安装</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>最终质检</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心工序 -->
+    <section id="process" class="py-16 bg-gradient-to-br from-indigo-900/20 to-purple-900/20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">后整理<span class="highlight">核心工序</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">提升成衣品质的关键步骤详解</p>
+            </div>
+            
+            <div class="step-container max-w-4xl mx-auto">
+                <!-- 水洗工序 -->
+                <div class="glassmorphism p-6 mb-10 process-step relative fade-in">
+                    <div class="flex flex-col md:flex-row items-start">
+                        <div class="md:w-1/3 mb-4 md:mb-0">
+                            <div class="relative h-48 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1604671801908-6f0c6a092c05?q=80&w=2070" alt="水洗工艺" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="md:w-2/3 md:pl-6">
+                            <h3 class="text-2xl font-bold mb-3">水洗工艺</h3>
+                            <div class="flex flex-wrap mb-4">
+                                <span class="property-badge bg-blue-500/20 text-blue-400">软化面料</span>
+                                <span class="property-badge bg-green-500/20 text-green-400">增加舒适度</span>
+                                <span class="property-badge bg-purple-500/20 text-purple-400">创造风格</span>
+                            </div>
+                            <p class="text-gray-400 mb-4">水洗是牛仔服装和休闲服装最常用的后整理工艺，通过水洗可以软化面料、增加舒适度、创造特殊外观效果。</p>
+                            <ul class="space-y-2 text-gray-400">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span><strong>普洗</strong>：常规清洗，去除杂质和浆料</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span><strong>石洗</strong>：使用浮石摩擦产生磨损效果</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span><strong>酵素洗</strong>：使用生物酶实现温和处理</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 熨烫工序 -->
+                <div class="glassmorphism p-6 mb-10 process-step relative fade-in">
+                    <div class="flex flex-col md:flex-row items-start">
+                        <div class="md:w-1/3 mb-4 md:mb-0">
+                            <div class="relative h-48 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?q=80&w=2079" alt="熨烫工艺" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="md:w-2/3 md:pl-6">
+                            <h3 class="text-2xl font-bold mb-3">熨烫整型</h3>
+                            <div class="flex flex-wrap mb-4">
+                                <span class="property-badge bg-yellow-500/20 text-yellow-400">平整外观</span>
+                                <span class="property-badge bg-pink-500/20 text-pink-400">定型保形</span>
+                                <span class="property-badge bg-red-500/20 text-red-400">提升质感</span>
+                            </div>
+                            <p class="text-gray-400 mb-4">熨烫是服装后整理中最基础的工序，通过温度、压力和蒸汽的作用，使服装平整、定型，提升整体质感。</p>
+                            <ul class="space-y-2 text-gray-400">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span><strong>蒸汽熨烫</strong>：适用于大多数面料，高效平整</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span><strong>模具压烫</strong>：用于衬衫领、袖口等部位定型</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-500 mt-1 mr-2"></i>
+                                    <span><strong>立体熨烫</strong>：使用人台保持服装立体形态</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 包装工序 -->
+                <div class="glassmorphism p-6 mb-10 process-step relative fade-in">
+                    <div class="flex flex-col md:flex-row items-start">
+                        <div class="md:w-1/3 mb-4 md:mb-0">
+                            <div class="relative h-48 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1605733513597-a8f8341084e6?q=80&w=1923" alt="包装工艺" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="md:w-2/3 md:pl-6">
+                            <h3 class="text-2xl font-bold mb-3">包装与质检</h3>
+                            <div class="flex flex-wrap mb-4">
+                                <span class="property-badge bg-green-500/20 text-green-400">保护产品</span>
+                                <span class="property-badge bg-purple-500/20 text-purple-400">提升形象</span>
+                                <span class="property-badge bg-blue-500/20 text-blue-400">最终把关</span>
+                            </div>
+                            <p class="text-gray-400 mb-4">包装是服装生产的最后环节，不仅保护产品，还直接影响品牌形象和消费者体验。</p>
+                            <ul class="space-y-2 text-gray-400">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span><strong>折叠包装</strong>：标准化的折叠方式节省空间</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span><strong>挂装</strong>：保持服装平整无皱褶</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                    <span><strong>最终质检</strong>：确保产品符合质量标准</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术对比 -->
+    <section id="comparison" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">后整理<span class="highlight">技术对比</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">不同工艺的优缺点及应用场景分析</p>
+            </div>
+            
+            <div class="glassmorphism p-6 overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="py-3 px-4 text-gray-300 font-semibold">工艺类型</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">适用面料</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">效果特点</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">生产效率</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">环境影响</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">成本</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">传统水洗</td>
+                            <td class="py-3 px-4">牛仔、帆布</td>
+                            <td class="py-3 px-4">基础清洁，轻微软化</td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 90%"></div>
+                                <span>高</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-red-500" style="width: 70%"></div>
+                                <span>高</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-yellow-500" style="width: 40%"></div>
+                                <span>低</span>
+                            </td>
+                        </tr>
+                        
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">激光处理</td>
+                            <td class="py-3 px-4">牛仔、棉质</td>
+                            <td class="py-3 px-4">精准图案，无接触</td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 75%"></div>
+                                <span>中高</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 20%"></div>
+                                <span>低</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-yellow-500" style="width: 70%"></div>
+                                <span>中</span>
+                            </td>
+                        </tr>
+                        
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">酵素洗</td>
+                            <td class="py-3 px-4">棉、麻、牛仔</td>
+                            <td class="py-3 px-4">自然磨损，手感柔软</td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-yellow-500" style="width: 60%"></div>
+                                <span>中</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 30%"></div>
+                                <span>低</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-yellow-500" style="width: 60%"></div>
+                                <span>中</span>
+                            </td>
+                        </tr>
+                        
+                        <tr class="hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">臭氧处理</td>
+                            <td class="py-3 px-4">各类面料</td>
+                            <td class="py-3 px-4">环保漂白，杀菌除味</td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 80%"></div>
+                                <span>高</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-green-500" style="width: 10%"></div>
+                                <span>很低</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="comparison-bar bg-yellow-500" style="width: 50%"></div>
+                                <span>中</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <h3 class="text-xl font-bold mb-4">传统工艺</h3>
+                    <p class="text-gray-400 mb-4">传统后整理工艺成熟稳定，但存在资源消耗大、环境影响明显的问题。</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>技术成熟，操作简单</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>设备投资成本低</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                            <span>高水耗、高能耗</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                            <span>化学品使用多</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <h3 class="text-xl font-bold mb-4">创新技术</h3>
+                    <p class="text-gray-400 mb-4">创新后整理技术更环保高效，但初期投入成本较高。</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>节水节能，环境友好</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>处理效果更精准可控</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                            <span>设备投资成本高</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times-circle text-red-500 mt-1 mr-2"></i>
+                            <span>需要专业技术支持</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品质影响 -->
+    <section id="impact" class="py-16 bg-gradient-to-br from-indigo-900/20 to-purple-900/20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">后整理对<span class="highlight">品质的影响</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">优质的后整理如何提升服装的整体品质和价值</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mb-4">
+                        <i class="fas fa-eye text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">外观提升</h3>
+                    <p class="text-gray-400">消除褶皱，平整表面，改善光泽度，使服装呈现最佳外观状态。</p>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+                        <i class="fas fa-hand-holding-heart text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">手感改善</h3>
+                    <p class="text-gray-400">使面料更柔软舒适，增加亲肤性，提升穿着体验。</p>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4">
+                        <i class="fas fa-ruler-combined text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">尺寸稳定</h3>
+                    <p class="text-gray-400">通过预缩处理，减少服装使用过程中的缩水变形问题。</p>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-4">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">功能增强</h3>
+                    <p class="text-gray-400">增加防水、防污、防皱等特性，提高服装实用性。</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                <div class="glassmorphism p-8 card-hover fade-in">
+                    <h3 class="text-2xl font-bold mb-4">后整理前</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mt-1 mr-2"></i>
+                            <span>面料僵硬，手感粗糙</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mt-1 mr-2"></i>
+                            <span>存在褶皱和压痕</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mt-1 mr-2"></i>
+                            <span>尺寸不稳定，易缩水</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-times text-red-500 mt-1 mr-2"></i>
+                            <span>缺乏功能性处理</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-8 card-hover fade-in">
+                    <h3 class="text-2xl font-bold mb-4">后整理后</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>面料柔软舒适，手感佳</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>平整挺括，外观精美</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>尺寸稳定，不易变形</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>具备多种实用功能</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">后整理工艺百科</h3>
+                    <p class="text-gray-400">提供专业的服装后整理知识，帮助您了解提升成衣品质的关键工艺</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">核心工序</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#process" class="text-gray-400 hover:text-pink-400 transition-colors">水洗工艺</a></li>
+                        <li><a href="#process" class="text-gray-400 hover:text-pink-400 transition-colors">熨烫整型</a></li>
+                        <li><a href="#process" class="text-gray-400 hover:text-pink-400 transition-colors">包装质检</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">资源</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">技术手册</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">工艺视频</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">行业标准</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 text-center">
+                <p class="text-gray-500 text-sm">© 2023 后整理工艺百科 | AI智能服装导览平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('max-h-0');
+            document.getElementById('mobileMenu').classList.toggle('py-4');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端菜单，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        document.getElementById('mobileMenu').classList.add('max-h-0');
+                        document.getElementById('mobileMenu').classList.remove('py-4');
+                    }
+                }
+            });
+        });
+        
+        // 滚动动画
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // 滚动时改变导航栏样式
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.classList.add('bg-indigo-950');
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.classList.remove('bg-indigo-950');
+            }
+        });
+    </script>
+</body>
+</html>

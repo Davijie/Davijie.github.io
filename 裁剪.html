@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装裁剪工艺详解 | AI智能服装导览平台</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .highlight {
+            color: #ec4899;
+            font-weight: 600;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ec4899;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .section-title {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(to right, #ec4899, #8b5cf6);
+            border-radius: 2px;
+        }
+        .tool-card {
+            border-left: 3px solid #ec4899;
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            border-left: 3px solid #8b5cf6;
+        }
+        .process-step {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 30px;
+        }
+        .process-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%238b5cf6' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="pattern-bg">
+    <!-- 头部区域 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-cut text-2xl text-pink-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">服装裁剪工艺</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#intro" class="nav-link text-gray-300 hover:text-white">工艺简介</a>
+                <a href="#tools" class="nav-link text-gray-300 hover:text-white">裁剪工具</a>
+                <a href="#process" class="nav-link text-gray-300 hover:text-white">工艺流程</a>
+                <a href="#techniques" class="nav-link text-gray-300 hover:text-white">裁剪技巧</a>
+                <a href="#importance" class="nav-link text-gray-300 hover:text-white">工艺重要性</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menuToggle" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="mobile-menu md:hidden bg-indigo-950/95">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#intro" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">工艺简介</a>
+                <a href="#tools" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">裁剪工具</a>
+                <a href="#process" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">工艺流程</a>
+                <a href="#techniques" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">裁剪技巧</a>
+                <a href="#importance" class="py-2 text-gray-300 hover:text-white">工艺重要性</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative h-96 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+        <div class="absolute inset-0 bg-[url('https://s.coze.cn/image/8j6mY7vQe2c/')] bg-cover bg-center mix-blend-overlay opacity-30 z-0"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">服装<span class="highlight">裁剪</span>工艺详解</h1>
+            <p class="text-xl text-gray-200 mb-8">精准裁剪是服装品质的基石，探索专业裁剪技术与工艺奥秘</p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="#process" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    查看工艺流程 <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#tools" class="glassmorphism hover:bg-indigo-900/60 text-white py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    了解裁剪工具 <i class="fas fa-tools ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-4 py-12 max-w-6xl">
+        <!-- 工艺简介 -->
+        <section id="intro" class="mb-16 glassmorphism p-8">
+            <h2 class="text-3xl font-bold mb-6 section-title">裁剪工艺简介</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        服装裁剪工艺是服装生产过程中的核心环节，它决定了服装的基本形状和尺寸精度。裁剪工艺不仅要求精准，还需要根据面料特性、服装款式和生产规模选择合适的技术方法。
+                    </p>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        现代裁剪工艺融合了传统手工技巧与先进自动化技术，从单件定制到大规模生产，裁剪工艺都在确保服装品质方面发挥着不可替代的作用。
+                    </p>
+                    <div class="flex items-center text-pink-400">
+                        <i class="fas fa-lightbulb text-xl mr-2"></i>
+                        <span class="font-medium">专业裁剪可提升面料利用率高达15-25%，显著降低生产成本</span>
+                    </div>
+                </div>
+                
+                <div class="relative h-80 rounded-xl overflow-hidden border-2 border-indigo-500/30">
+                    <div class="absolute inset-0 bg-[url('https://s.coze.cn/image/8j6mY7vQe2c/')] bg-cover bg-center"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 裁剪工具 -->
+        <section id="tools" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 section-title">专业裁剪工具</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glassmorphism p-6 card-hover tool-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mr-4">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">裁剪剪刀</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">专业裁缝剪刀采用高碳钢材质，刀身长20-30cm，提供精准的裁剪控制。适用于丝绸、棉麻等各类面料。</p>
+                    <div class="text-sm text-gray-400 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>保持刀锋锋利，避免裁剪时拉扯面料</span>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover tool-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mr-4">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">电动裁剪刀</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">工业级电动裁剪刀，每分钟可裁剪3000转以上，适用于大批量生产。配备安全装置和激光引导系统。</p>
+                    <div class="text-sm text-gray-400 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>需定期维护刀片，保持最佳裁剪状态</span>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover tool-card">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mr-4">
+                            <i class="fas fa-compress-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">自动裁床</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">计算机控制的自动裁剪系统，可同时裁剪数百层面料，精度达0.1mm。大幅提高生产效率和材料利用率。</p>
+                    <div class="text-sm text-gray-400 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span>适用于大规模生产，减少人工误差</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工艺流程 -->
+        <section id="process" class="mb-16 glassmorphism p-8">
+            <h2 class="text-3xl font-bold mb-8 section-title">裁剪工艺流程</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="process-step" data-step="1">
+                        <h3 class="text-xl font-semibold mb-3">面料预处理</h3>
+                        <p class="text-gray-300">将面料进行预缩处理，消除内应力，确保裁剪后尺寸稳定。根据面料特性选择适当方法（蒸汽预缩或自然松弛）。</p>
+                    </div>
+                    
+                    <div class="process-step" data-step="2">
+                        <h3 class="text-xl font-semibold mb-3">铺料与排料</h3>
+                        <p class="text-gray-300">根据裁剪方案将面料多层铺放，利用CAD系统进行智能排料，最大化面料利用率，减少浪费。</p>
+                    </div>
+                    
+                    <div class="process-step" data-step="3">
+                        <h3 class="text-xl font-semibold mb-3">裁剪作业</h3>
+                        <p class="text-gray-300">根据面料特性和裁剪要求选择合适的裁剪工具。保持裁剪方向一致，确保裁片边缘整齐，尺寸精确。</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="process-step" data-step="4">
+                        <h3 class="text-xl font-semibold mb-3">裁片标记</h3>
+                        <p class="text-gray-300">在裁片上准确标记对位点、缝份、口袋位置等重要信息，确保后续缝制环节的准确性。</p>
+                    </div>
+                    
+                    <div class="process-step" data-step="5">
+                        <h3 class="text-xl font-semibold mb-3">分拣与捆扎</h3>
+                        <p class="text-gray-300">将裁片按部件和尺码分类，配套捆扎并做好标识，准备进入缝制车间。</p>
+                    </div>
+                    
+                    <div class="process-step" data-step="6">
+                        <h3 class="text-xl font-semibold mb-3">质量检验</h3>
+                        <p class="text-gray-300">对裁片进行100%检验或抽样检验，确保裁片尺寸、形状、标记等符合工艺要求。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-indigo-900/50 p-6 rounded-xl">
+                <h3 class="text-xl font-semibold mb-4 text-pink-400 flex items-center">
+                    <i class="fas fa-star mr-2"></i> 专业提示
+                </h3>
+                <p class="text-gray-300 mb-3">• 不同面料需采用不同的裁剪压力和速度 - 丝绸等轻薄面料需降低压力</p>
+                <p class="text-gray-300 mb-3">• 格纹和条纹面料需特别注意对格对条，确保图案连贯性</p>
+                <p class="text-gray-300">• 裁剪方向需与面料经向平行，避免成衣变形</p>
+            </div>
+        </section>
+
+        <!-- 裁剪技巧 -->
+        <section id="techniques" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 section-title">专业裁剪技巧</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glassmorphism p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-vector-square"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold">面料排料技巧</h3>
+                    </div>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">利用CAD排料系统，可提高面料利用率5-15%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">有方向性的面料（灯芯绒、绒毛等）需保持同一方向排料</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">对称裁片可采用对折排料法，减少裁剪工作量</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-pink-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">格纹面料需预留额外长度用于对格</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold">手工裁剪技巧</h3>
+                    </div>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">保持剪刀与工作台垂直，确保裁剪边缘平直</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">裁剪曲线时，小幅度转动面料而非剪刀</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">多层裁剪时，使用定位针固定各层面料</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-3"></i>
+                            <span class="text-gray-300">斜裁面料时需特别处理，防止变形</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 工艺重要性 -->
+        <section id="importance" class="glassmorphism p-8">
+            <h2 class="text-3xl font-bold mb-8 section-title">裁剪工艺的重要性</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="flex items-start mb-6">
+                        <div class="w-12 h-12 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-4 mt-1">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">影响成衣品质</h3>
+                            <p class="text-gray-300">精准的裁剪是优质服装的基础，直接决定了成衣的版型、合身度和外观效果。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mb-6">
+                        <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-4 mt-1">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">控制生产成本</h3>
+                            <p class="text-gray-300">优化裁剪方案可显著提高面料利用率，面料占服装总成本的40-60%，合理裁剪可节省大量成本。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-4 mt-1">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">提高生产效率</h3>
+                            <p class="text-gray-300">自动化裁剪设备可同时处理数百层面料，比传统手工裁剪效率提高10倍以上。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-4 text-center text-pink-400">裁剪精度与成衣品质关系</h3>
+                    <div class="relative h-64">
+                        <div class="absolute inset-0 flex flex-col justify-between">
+                            <div class="flex items-end">
+                                <div class="w-1/5 bg-gradient-to-t from-pink-500 to-pink-600 h-5/6 rounded-t-md mx-1"></div>
+                                <div class="w-1/5 bg-gradient-to-t from-pink-500 to-pink-600 h-4/6 rounded-t-md mx-1"></div>
+                                <div class="w-1/5 bg-gradient-to-t from-purple-500 to-purple-600 h-full rounded-t-md mx-1"></div>
+                                <div class="w-1/5 bg-gradient-to-t from-purple-500 to-purple-600 h-3/5 rounded-t-md mx-1"></div>
+                                <div class="w-1/5 bg-gradient-to-t from-blue-500 to-blue-600 h-2/6 rounded-t-md mx-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between mt-4 text-sm text-gray-300">
+                        <span>±5mm</span>
+                        <span>±3mm</span>
+                        <span>±1mm</span>
+                        <span>±0.5mm</span>
+                        <span>±0.2mm</span>
+                    </div>
+                    <div class="text-center mt-4">
+                        <span class="text-sm text-gray-400">裁剪精度越高，成衣品质评分越高</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">AI服装导览</h3>
+                    <p class="text-gray-400">探索服装设计、生产与工艺的专业平台，提供全面的服装行业知识。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">工艺专题</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">缝制工艺</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">整烫技术</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">面料知识</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">品质检验</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-2"></i> contact@fashion-ai.com</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone mr-2"></i> +86 400-123-4567</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> 上海市浦东新区时尚设计中心</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-douyin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 AI服装导览平台. 保留所有权利.</p>
+                <div class="text-gray-500 text-sm">
+                    <span>探索服装世界的智能指南</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端菜单，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        document.getElementById('mobileMenu').classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // 滚动时改变导航栏样式
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.classList.add('bg-indigo-950');
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.classList.remove('bg-indigo-950');
+            }
+        });
+    </script>
+</body>
+</html>

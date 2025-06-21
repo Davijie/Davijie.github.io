@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装面料知识大全 - AI智能导览平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #7e22ce;
+            --highlight: #ec4899;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--primary);
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(126, 34, 206, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+        
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -10px rgba(236, 72, 153, 0.4);
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--highlight);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, #ec4899, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        .hero-title {
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #7e22ce, #ec4899);
+            border-radius: 2px;
+        }
+        
+        .fabric-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .fabric-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .fabric-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .fabric-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .fabric-texture {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .fabric-texture::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+            background-size: 20px 20px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .property-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-tshirt text-2xl text-purple-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">面料知识百科</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#categories" class="nav-link text-gray-300 hover:text-white">面料分类</a>
+                <a href="#comparison" class="nav-link text-gray-300 hover:text-white">特性对比</a>
+                <a href="#application" class="nav-link text-gray-300 hover:text-white">应用场景</a>
+                <a href="#care" class="nav-link text-gray-300 hover:text-white">护理指南</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menuToggle" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-indigo-950/95 max-h-0 overflow-hidden transition-all duration-300">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#categories" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">面料分类</a>
+                <a href="#comparison" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">特性对比</a>
+                <a href="#application" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">应用场景</a>
+                <a href="#care" class="py-2 text-gray-300 hover:text-white">护理指南</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden fabric-texture">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+        <div class="absolute inset-0 z-0 opacity-10" style="background: url('https://images.unsplash.com/photo-1520006403909-838d6b92c22e?q=80&w=2070') center/cover;"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white hero-title">探索<span class="highlight">服装面料</span>的奥秘</h1>
+            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">从天然纤维到高科技面料，全面了解服装材料的特性、优缺点及适用场景</p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="#categories" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    开始探索 <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#comparison" class="glassmorphism border border-purple-500/30 hover:border-purple-500 text-gray-200 py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    面料对比
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 面料分类 -->
+    <section id="categories" class="py-16 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">面料<span class="highlight">分类百科</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">了解不同类型的面料特性，为您的服装选择提供专业指导</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 天然纤维 -->
+                <div class="glassmorphism overflow-hidden card-hover fabric-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1598704684253-2905a7c178c9?q=80&w=2070" alt="天然纤维" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">天然纤维</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-wrap mb-4">
+                            <span class="property-badge bg-green-500/20 text-green-400">透气</span>
+                            <span class="property-badge bg-yellow-500/20 text-yellow-400">吸湿</span>
+                            <span class="property-badge bg-blue-500/20 text-blue-400">环保</span>
+                        </div>
+                        <p class="text-gray-400 mb-4">来自自然界的植物或动物纤维，具有出色的透气性和舒适度。</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mr-3">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">棉</h4>
+                                    <p class="text-gray-400 text-sm">柔软舒适，吸湿性强，适合日常穿着</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 mr-3">
+                                    <i class="fas fa-feather"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">羊毛</h4>
+                                    <p class="text-gray-400 text-sm">保暖性好，弹性优异，适合冬季服装</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mr-3">
+                                    <i class="fas fa-spa"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">丝绸</h4>
+                                    <p class="text-gray-400 text-sm">光泽优雅，手感柔滑，适合高档服装</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 化学纤维 -->
+                <div class="glassmorphism overflow-hidden card-hover fabric-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511882150382-421056c89033?q=80&w=2070" alt="化学纤维" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">化学纤维</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-wrap mb-4">
+                            <span class="property-badge bg-red-500/20 text-red-400">耐用</span>
+                            <span class="property-badge bg-blue-500/20 text-blue-400">抗皱</span>
+                            <span class="property-badge bg-purple-500/20 text-purple-400">易护理</span>
+                        </div>
+                        <p class="text-gray-400 mb-4">通过化学方法制造的人造纤维，具有优异的耐用性和功能性。</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mr-3">
+                                    <i class="fas fa-flask"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">涤纶</h4>
+                                    <p class="text-gray-400 text-sm">抗皱耐磨，快干易洗，适合运动服装</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mr-3">
+                                    <i class="fas fa-water"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">尼龙</h4>
+                                    <p class="text-gray-400 text-sm">强度高，弹性好，适合户外装备</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mr-3">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">氨纶</h4>
+                                    <p class="text-gray-400 text-sm">弹性极佳，常用于紧身服装</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 混纺面料 -->
+                <div class="glassmorphism overflow-hidden card-hover fabric-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?q=80&w=2079" alt="混纺面料" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">混纺面料</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-wrap mb-4">
+                            <span class="property-badge bg-purple-500/20 text-purple-400">多功能</span>
+                            <span class="property-badge bg-yellow-500/20 text-yellow-400">平衡</span>
+                            <span class="property-badge bg-green-500/20 text-green-400">经济</span>
+                        </div>
+                        <p class="text-gray-400 mb-4">结合不同纤维的优点，创造出性能更全面的面料。</p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 mr-3">
+                                    <i class="fas fa-blender"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">棉涤混纺</h4>
+                                    <p class="text-gray-400 text-sm">结合棉的舒适和涤纶的耐用</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 mr-3">
+                                    <i class="fas fa-percent"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">毛涤混纺</h4>
+                                    <p class="text-gray-400 text-sm">提升羊毛的耐磨性和抗皱性</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 mr-3">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">丝棉混纺</h4>
+                                    <p class="text-gray-400 text-sm">平衡丝绸的光泽和棉的实用性</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 面料特性对比 -->
+    <section id="comparison" class="py-16 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 fabric-texture">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">面料<span class="highlight">特性对比</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">不同面料的性能特点比较，帮助您做出明智选择</p>
+            </div>
+            
+            <div class="glassmorphism p-6 overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="py-3 px-4 text-gray-300 font-semibold">面料类型</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">透气性</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">保暖性</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">吸湿性</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">耐用性</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">抗皱性</th>
+                            <th class="py-3 px-4 text-gray-300 font-semibold">护理难度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">棉</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 95%"></div>
+                                    </div>
+                                    <span>95%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                    <span>60%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                    <span>90%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                    <span>70%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                    <span>30%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 20%"></div>
+                                    </div>
+                                    <span>容易</span>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">羊毛</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                    <span>80%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 95%"></div>
+                                    </div>
+                                    <span>95%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span>85%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <span>75%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                    <span>65%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                    <span>困难</span>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr class="border-b border-gray-800 hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">丝绸</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span>85%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                    <span>50%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <span>75%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 60%"></div>
+                                    </div>
+                                    <span>60%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 40%"></div>
+                                    </div>
+                                    <span>40%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                    <span>困难</span>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr class="hover:bg-indigo-900/30">
+                            <td class="py-3 px-4 font-medium">涤纶</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 40%"></div>
+                                    </div>
+                                    <span>40%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 55%"></div>
+                                    </div>
+                                    <span>55%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-red-500 h-2.5 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                    <span>30%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                    <span>90%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                    <span>90%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <div class="w-24 bg-gray-700 rounded-full h-2.5 mr-2">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 15%"></div>
+                                    </div>
+                                    <span>容易</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 应用场景 -->
+    <section id="application" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">面料<span class="highlight">应用场景</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">根据不同需求选择合适的面料，发挥最佳性能</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4">
+                        <i class="fas fa-sun text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">夏季服装</h3>
+                    <p class="text-gray-400 mb-4">推荐面料：棉、麻、真丝</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>高透气性和吸湿性</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>轻盈透气的质地</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>良好的散热性能</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+                        <i class="fas fa-snowflake text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">冬季服装</h3>
+                    <p class="text-gray-400 mb-4">推荐面料：羊毛、羊绒、摇粒绒</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>优异的保暖性能</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>良好的透气调节能力</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>吸湿排汗功能</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-4">
+                        <i class="fas fa-running text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">运动服装</h3>
+                    <p class="text-gray-400 mb-4">推荐面料：涤纶、尼龙、氨纶混纺</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>出色的吸湿排汗功能</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>良好的弹性和延展性</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>快干易护理</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-4">
+                        <i class="fas fa-briefcase text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">正装</h3>
+                    <p class="text-gray-400 mb-4">推荐面料：羊毛、混纺、高级棉</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-red-500 mt-1 mr-2"></i>
+                            <span>良好的垂坠感和轮廓保持</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-red-500 mt-1 mr-2"></i>
+                            <span>抗皱易打理</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-red-500 mt-1 mr-2"></i>
+                            <span>高级质感和光泽</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 护理指南 -->
+    <section id="care" class="py-16 bg-gradient-to-br from-indigo-900/20 to-purple-900/20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">面料<span class="highlight">护理指南</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">正确的护理方式延长服装寿命，保持最佳状态</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="glassmorphism p-8 card-hover fade-in">
+                    <h3 class="text-2xl font-bold mb-6">面料护理要点</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="flex">
+                            <div class="bg-purple-500/10 text-purple-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-washing-machine text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">洗涤方式</h4>
+                                <p class="text-gray-400">根据面料特性选择手洗、机洗或干洗。天然纤维通常需要更温和的洗涤方式。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="bg-pink-500/10 text-pink-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-temperature-high text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">温度控制</h4>
+                                <p class="text-gray-400">高温可能导致某些面料缩水或变形。羊毛、丝绸等面料应使用冷水洗涤。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="bg-blue-500/10 text-blue-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-wind text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">晾晒方法</h4>
+                                <p class="text-gray-400">避免阳光直射，尤其是彩色面料。丝绸、羊毛等面料应平铺晾干。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="bg-yellow-500/10 text-yellow-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-iron text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">熨烫技巧</h4>
+                                <p class="text-gray-400">根据面料选择适当温度，使用蒸汽熨烫。合成纤维需低温熨烫。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 fade-in">
+                    <div class="glassmorphism overflow-hidden p-4 text-center">
+                        <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mx-auto mb-4">
+                            <i class="fas fa-leaf text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2">天然纤维</h4>
+                        <p class="text-gray-400 text-sm">冷水手洗，避免暴晒，中温熨烫</p>
+                    </div>
+                    <div class="glassmorphism overflow-hidden p-4 text-center">
+                        <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mx-auto mb-4">
+                            <i class="fas fa-flask text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2">化学纤维</h4>
+                        <p class="text-gray-400 text-sm">机洗低温，避免高温，低温熨烫</p>
+                    </div>
+                    <div class="glassmorphism overflow-hidden p-4 text-center">
+                        <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mx-auto mb-4">
+                            <i class="fas fa-blender text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2">混纺面料</h4>
+                        <p class="text-gray-400 text-sm">根据主成分选择洗涤方式</p>
+                    </div>
+                    <div class="glassmorphism overflow-hidden p-4 text-center">
+                        <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mx-auto mb-4">
+                            <i class="fas fa-tshirt text-2xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2">特殊面料</h4>
+                        <p class="text-gray-400 text-sm">查看洗标，建议专业干洗</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">面料知识百科</h3>
+                    <p class="text-gray-400">提供专业的服装面料知识，帮助您了解、选择和护理各种面料</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">面料分类</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#categories" class="text-gray-400 hover:text-pink-400 transition-colors">天然纤维</a></li>
+                        <li><a href="#categories" class="text-gray-400 hover:text-pink-400 transition-colors">化学纤维</a></li>
+                        <li><a href="#categories" class="text-gray-400 hover:text-pink-400 transition-colors">混纺面料</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">资源</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">面料词典</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">选购指南</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">护理手册</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 text-center">
+                <p class="text-gray-500 text-sm">© 2023 面料知识百科 | AI智能服装导览平台</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('max-h-0');
+            document.getElementById('mobileMenu').classList.toggle('py-4');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端菜单，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        document.getElementById('mobileMenu').classList.add('max-h-0');
+                        document.getElementById('mobileMenu').classList.remove('py-4');
+                    }
+                }
+            });
+        });
+        
+        // 滚动动画
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // 滚动时改变导航栏样式
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.classList.add('bg-indigo-950');
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.classList.remove('bg-indigo-950');
+            }
+        });
+    </script>
+</body>
+</html>

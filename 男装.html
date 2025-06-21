@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024春夏男装趋势 | AI服装导览平台</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glassmorphism:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .highlight {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .fabric-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%233b82f6' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .trend-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
+        }
+        
+        .trend-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+            box-shadow: 0 15px 30px -10px rgba(59, 130, 246, 0.4);
+        }
+        
+        .color-palette {
+            display: flex;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .color-item {
+            flex: 1;
+            position: relative;
+        }
+        
+        .color-item:hover::after {
+            content: attr(data-color);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        
+        .runway-show {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            height: 300px;
+        }
+        
+        .runway-show::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+            z-index: 2;
+        }
+        
+        .runway-show img {
+            transition: transform 8s linear;
+        }
+        
+        .runway-show:hover img {
+            transform: translateY(-30%);
+        }
+        
+        .designer-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .designer-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9), transparent);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen pattern-bg">
+    <!-- 头部区域 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-tshirt text-2xl text-blue-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">2024春夏男装趋势</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="nav-link text-gray-300 hover:text-white">趋势概览</a>
+                <a href="#key-trends" class="nav-link text-gray-300 hover:text-white">关键趋势</a>
+                <a href="#colors" class="nav-link text-gray-300 hover:text-white">色彩与面料</a>
+                <a href="#styles" class="nav-link text-gray-300 hover:text-white">风格单品</a>
+                <a href="#designers" class="nav-link text-gray-300 hover:text-white">设计师推荐</a>
+            </div>
+            
+            <div class="flex space-x-4">
+                <a href="#" class="text-gray-300 hover:text-blue-400">
+                    <i class="fab fa-weixin"></i>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-blue-400">
+                    <i class="fab fa-weibo"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative py-24 flex items-center justify-center overflow-hidden">
+        <div class="fabric-texture"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-blue-900/70 z-0"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <div class="inline-block glassmorphism px-6 py-2 mb-6">
+                <span class="text-blue-400">2024春夏男装趋势</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white">重塑男性时尚新定义</h1>
+            <p class="text-xl text-gray-200 max-w-3xl mx-auto mb-10">探索2024春夏男装六大核心趋势：从工装复兴到数字未来，重新定义当代男性衣橱</p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#key-trends" class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium py-3 px-8 rounded-full transition-all duration-300">
+                    探索趋势 <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+                <a href="#styles" class="glassmorphism hover:bg-indigo-900/80 text-white font-medium py-3 px-8 rounded-full transition-all duration-300">
+                    必备单品
+                </a>
+            </div>
+        </div>
+        
+        <!-- 浮动元素 -->
+        <div class="absolute top-1/4 left-10 w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 opacity-30 blur-xl floating-element"></div>
+        <div class="absolute bottom-1/3 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 opacity-30 blur-xl floating-element" style="animation-delay: 1.5s;"></div>
+        <div class="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 opacity-30 blur-xl floating-element" style="animation-delay: 2.5s;"></div>
+    </section>
+
+    <!-- 趋势概览 -->
+    <section id="overview" class="py-16 relative">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex items-center mb-12">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="text-3xl font-bold">2024春夏男装趋势概览</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <div class="glassmorphism p-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-blue-300">趋势主题解读</h3>
+                    <p class="text-gray-300 mb-6">2024春夏男装呈现出多元融合的特点，设计师们在实用主义与未来主义之间寻找平衡点，打造既满足日常需求又充满前瞻性的男装系列。</p>
+                    <p class="text-gray-300">本季核心主题可概括为"新实用主义"——在功能性与美学之间找到平衡点，同时融入数字化元素和可持续理念。</p>
+                    
+                    <div class="mt-8 grid grid-cols-2 gap-4">
+                        <div class="bg-blue-900/30 p-4 rounded-lg">
+                            <div class="text-blue-400 text-2xl mb-2">
+                                <i class="fas fa-recycle"></i>
+                            </div>
+                            <h4 class="font-semibold">可持续设计</h4>
+                            <p class="text-gray-400 text-sm">再生面料占比提升至45%</p>
+                        </div>
+                        <div class="bg-blue-900/30 p-4 rounded-lg">
+                            <div class="text-blue-400 text-2xl mb-2">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h4 class="font-semibold">色彩解放</h4>
+                            <p class="text-gray-400 text-sm">柔和粉彩与高饱和色并存</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glassmorphism p-6 trend-card">
+                        <div class="text-4xl text-blue-500 mb-4">
+                            <i class="fas fa-vest"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">工装复兴</h3>
+                        <p class="text-gray-400">多功能口袋、耐磨面料与实用细节</p>
+                    </div>
+                    <div class="glassmorphism p-6 trend-card">
+                        <div class="text-4xl text-blue-500 mb-4">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">轻盈质感</h3>
+                        <p class="text-gray-400">透气面料与宽松剪裁</p>
+                    </div>
+                    <div class="glassmorphism p-6 trend-card">
+                        <div class="text-4xl text-blue-500 mb-4">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">数字未来</h3>
+                        <p class="text-gray-400">科技面料与虚拟元素</p>
+                    </div>
+                    <div class="glassmorphism p-6 trend-card">
+                        <div class="text-4xl text-blue-500 mb-4">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">自然灵感</h3>
+                        <p class="text-gray-400">有机材质与大地色调</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关键趋势 -->
+    <section id="key-trends" class="py-16 bg-gradient-to-b from-blue-900/20 to-transparent">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex items-center mb-12">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h2 class="text-3xl font-bold">六大关键趋势深度解析</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 趋势1 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">01</div>
+                    <h3 class="text-xl font-semibold mb-3">实用工装复兴</h3>
+                    <p class="text-gray-300 mb-4">本季工装不再局限于传统设计，而是融入更多现代元素：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>多口袋设计融合隐藏式科技收纳</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>再生帆布与有机棉混纺面料</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>大地色系与工业蓝为主色调</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 趋势2 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">02</div>
+                    <h3 class="text-xl font-semibold mb-3">宽松廓形主导</h3>
+                    <p class="text-gray-300 mb-4">舒适度成为首要考量，宽松剪裁成为主流：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>落肩设计与加长袖型</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>阔腿裤与工装短裤</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt=1 mr-2"></i>
+                            <span>层叠穿搭保持流畅线条</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 趋势3 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">03</div>
+                    <h3 class="text-xl font-semibold mb-3">数字化未来风</h3>
+                    <p class="text-gray-300 mb-4">科技元素融入日常穿搭：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>反光材质与金属光泽面料</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>虚拟世界启发的印花图案</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>模块化设计可自由组合</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 趋势4 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">04</div>
+                    <h3 class="text-xl font-semibold mb-3">粉彩革命</h3>
+                    <p class="text-gray-300 mb-4">男性色彩界限进一步打破：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>薰衣草紫、薄荷绿成为主打色</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>同色系搭配打造单色造型</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>粉彩与中性色的创新组合</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 趋势5 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">05</div>
+                    <h3 class="text-xl font-semibold mb-3">透明层次</h3>
+                    <p class="text-gray-300 mb-4">透视材质的大胆运用：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>网眼、薄纱材质外穿</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>内搭背心或T恤的层搭方式</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>环保再生聚酯纤维材质</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 趋势6 -->
+                <div class="glassmorphism p-6 trend-card">
+                    <div class="text-blue-400 text-3xl mb-4">06</div>
+                    <h3 class="text-xl font-semibold mb-3">都市游牧</h3>
+                    <p class="text-gray-300 mb-4">自然元素融入都市生活：</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>亚麻、有机棉等天然材质</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>大地色系与矿物色调</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                            <span>宽松袍式外套与阔腿裤</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 色彩与面料 -->
+    <section id="colors" class="py-16 relative">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex items-center mb-12">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h2 class="text-3xl font-bold">2024春夏色彩与面料趋势</h2>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-12">
+                <h3 class="text-2xl font-semibold mb-6 text-blue-300">核心色彩方案</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="color-palette mb-6">
+                            <div class="color-item bg-[#9BB5CE]" data-color="#9BB5CE 宁静蓝"></div>
+                            <div class="color-item bg-[#D6C9C9]" data-color="#D6C9C9 灰粉"></div>
+                            <div class="color-item bg-[#D4B483]" data-color="#D4B483 陶土"></div>
+                            <div class="color-item bg-[#4A5759]" data-color="#4A5759 玄武岩灰"></div>
+                            <div class="color-item bg-[#3C4F76]" data-color="#3C4F76 矿物蓝"></div>
+                        </div>
+                        
+                        <p class="text-gray-300 mb-6">2024春夏男装色彩呈现两大方向：柔和自然色调与数字未来亮色。宁静蓝与灰粉成为主打色，搭配陶土和玄武岩灰等大地色系。</p>
+                        
+                        <div class="color-palette">
+                            <div class="color-item bg-[#FF5E5B]" data-color="#FF5E5B 能量橙"></div>
+                            <div class="color-item bg-[#00CECB]" data-color="#00CECB 电子青"></div>
+                            <div class="color-item bg-[#6A0572]" data-color="#6A0572 数字紫"></div>
+                            <div class="color-item bg-[#1A936F]" data-color="#1A936F 生态绿"></div>
+                            <div class="color-item bg-[#FFD166]" data-color="#FFD166 数字黄"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">创新面料应用</h4>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-4 mt-1">
+                                    <i class="fas fa-recycle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">再生科技面料</h4>
+                                    <p class="text-gray-400">由海洋塑料回收制成的功能性面料，兼具透气与防水特性</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-4 mt-1">
+                                    <i class="fas fa-wind"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">轻盈亚麻混纺</h4>
+                                    <p class="text-gray-400">亚麻与有机棉混纺，提升耐用性的同时保持透气舒适</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-4 mt-1">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">光感材质</h4>
+                                    <p class="text-gray-400">具有微妙光泽的再生聚酯纤维，打造未来感视觉效果</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 必备单品 -->
+    <section id="styles" class="py-16 bg-gradient-to-b from-blue-900/20 to-transparent">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex items-center mb-12">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+                <h2 class="text-3xl font-bold">2024春夏必备单品</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glassmorphism overflow-hidden trend-card">
+                    <div class="runway-show">
+                        <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1936" alt="工装夹克" class="w-full h-auto">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">多功能工装夹克</h3>
+                        <p class="text-gray-400 mb-4">采用再生帆布材质，多口袋设计，可拆卸内胆</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-400">关键品牌: A.P.C., Engineered Garments</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden trend-card">
+                    <div class="runway-show">
+                        <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1974" alt="宽松衬衫" class="w-full h-auto">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">廓形亚麻衬衫</h3>
+                        <p class="text-gray-400 mb-4">落肩设计，宽松剪裁，天然透气材质</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-400">关键品牌: Lemaire, Studio Nicholson</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden trend-card">
+                    <div class="runway-show">
+                        <img src="https://images.unsplash.com/photo-1601924638867-3a6de6b7a500?q=80&w=2070" alt="科技感外套" class="w-full h-auto">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">科技感半透明外套</h3>
+                        <p class="text-gray-400 mb-4">再生聚酯纤维材质，微透光效果，模块化设计</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-400">关键品牌: Acne Studios, Prada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 设计师推荐 -->
+    <section id="designers" class="py-16 relative">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex items-center mb-12">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h2 class="text-3xl font-bold">新锐设计师推荐</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glassmorphism overflow-hidden designer-card">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1887" alt="设计师" class="w-full h-64 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <h3 class="text-xl font-semibold text-white">李明浩</h3>
+                        <p class="text-blue-300">ZERO品牌创始人</p>
+                        <p class="text-gray-300 text-sm mt-2">专注于可持续工装设计，将传统工艺与现代科技完美融合</p>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden designer-card">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887" alt="设计师" class="w-full h-64 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <h3 class="text-xl font-semibold text-white">陈思远</h3>
+                        <p class="text-blue-300">NEOSCAPE设计总监</p>
+                        <p class="text-gray-300 text-sm mt-2">数字未来风格代表，擅长将虚拟元素融入实穿设计</p>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden designer-card">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888" alt="设计师" class="w-full h-64 object-cover">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <h3 class="text-xl font-semibold text-white">张薇</h3>
+                        <p class="text-blue-300">TERRA主理人</p>
+                        <p class="text-gray-300 text-sm mt-2">自然灵感倡导者，专注于有机材质与大地色系的应用</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12 mt-12">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">2024春夏男装趋势</h3>
+                    <p class="text-gray-400">提供专业的男装趋势分析、单品推荐和搭配建议，帮助您掌握最新时尚动态。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">趋势分类</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#key-trends" class="text-gray-400 hover:text-blue-400 transition-colors">关键趋势</a></li>
+                        <li><a href="#colors" class="text-gray-400 hover:text-blue-400 transition-colors">色彩与面料</a></li>
+                        <li><a href="#styles" class="text-gray-400 hover:text-blue-400 transition-colors">必备单品</a></li>
+                        <li><a href="#designers" class="text-gray-400 hover:text-blue-400 transition-colors">设计师推荐</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-2"></i> menswear@fashion-ai.com</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone mr-2"></i> +86 400-123-8888</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> 北京市时尚设计园区</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">获取趋势报告</h3>
+                    <div class="relative">
+                        <input type="email" placeholder="您的邮箱地址" class="w-full py-2 px-4 rounded-full bg-indigo-900/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <button class="absolute right-1 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1 px-3 text-sm">
+                            订阅
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-sm mt-2">获取完整的2024春夏男装趋势报告</p>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 AI服装导览平台. 保留所有权利.</p>
+                <div class="text-gray-500 text-sm">
+                    <span>专业趋势分析</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

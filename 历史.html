@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装历史之旅 - 从古代到现代的服饰演变</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #7e22ce;
+            --highlight: #ec4899;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--primary);
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(126, 34, 206, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+        
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -10px rgba(236, 72, 153, 0.4);
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--highlight);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, #7e22ce, #ec4899);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 50%;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 50%;
+            text-align: left;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #7e22ce, #ec4899);
+            border-radius: 50%;
+            top: 30px;
+            z-index: 10;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -12px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -12px;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .highlight {
+            background: linear-gradient(90deg, #ec4899, #7e22ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+        
+        .hero-title {
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #7e22ce, #ec4899);
+            border-radius: 2px;
+        }
+        
+        .history-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .history-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .history-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .history-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                padding-left: 70px !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-dot,
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 18px;
+                right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-vest text-2xl text-purple-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">服装历史之旅</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#ancient" class="nav-link text-gray-300 hover:text-white">古代起源</a>
+                <a href="#medieval" class="nav-link text-gray-300 hover:text-white">中世纪</a>
+                <a href="#renaissance" class="nav-link text-gray-300 hover:text-white">文艺复兴</a>
+                <a href="#modern" class="nav-link text-gray-300 hover:text-white">现代演变</a>
+                <a href="#future" class="nav-link text-gray-300 hover:text-white">未来趋势</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menuToggle" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="mobile-menu md:hidden bg-indigo-950/95 max-h-0 overflow-hidden transition-all duration-300">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#ancient" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">古代起源</a>
+                <a href="#medieval" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">中世纪</a>
+                <a href="#renaissance" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">文艺复兴</a>
+                <a href="#modern" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">现代演变</a>
+                <a href="#future" class="py-2 text-gray-300 hover:text-white">未来趋势</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+        <div class="absolute inset-0 z-0 opacity-20" style="background: url('https://images.unsplash.com/photo-1516762689617-e1cffcef479d?q=80&w=2111') center/cover;"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white hero-title">探索<span class="highlight">服装历史</span>的演变之旅</h1>
+            <p class="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">从古埃及的亚麻布到现代的高科技面料，追溯人类文明如何通过服饰表达身份、地位与时代精神</p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="#ancient" class="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    开始探索 <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+                <a href="#timeline" class="glassmorphism border border-purple-500/30 hover:border-purple-500 text-gray-200 py-3 px-8 rounded-full transition-all duration-300 font-medium">
+                    历史时间线
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服装历史时间线 -->
+    <section id="timeline" class="py-16 relative">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">服装历史<span class="highlight">时间线</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">穿越五千年的服饰演变，见证人类文明如何通过服装表达自我</p>
+            </div>
+            
+            <div class="relative timeline my-8">
+                <!-- 时间线项目 -->
+                <div class="relative mb-16 timeline-item fade-in">
+                    <div class="glassmorphism p-6 max-w-md card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-500/10 text-purple-500 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-monument"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">古代文明</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">公元前3000年 - 公元500年</p>
+                        <p class="text-gray-400">古埃及、古希腊和古罗马的服装以简单 draped 款式为主，使用亚麻、羊毛等天然材料，反映社会地位和职业</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="relative mb-16 timeline-item fade-in">
+                    <div class="glassmorphism p-6 max-w-md card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-pink-500/10 text-pink-500 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-castle"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">中世纪</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">公元500年 - 1500年</p>
+                        <p class="text-gray-400">服装成为社会等级的标志，贵族穿着奢华的丝绸和皮毛，农民穿着简单的羊毛和亚麻服装，出现了剪裁更合身的款式</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="relative mb-16 timeline-item fade-in">
+                    <div class="glassmorphism p-6 max-w-md card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-500/10 text-blue-500 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">文艺复兴</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">1400年 - 1600年</p>
+                        <p class="text-gray-400">服装变得更加精致华丽，强调人体轮廓，使用奢华的丝绸、天鹅绒和蕾丝，色彩鲜艳，装饰繁复</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="relative mb-16 timeline-item fade-in">
+                    <div class="glassmorphism p-6 max-w-md card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-yellow-500/10 text-yellow-500 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">工业革命</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">1760年 - 1840年</p>
+                        <p class="text-gray-400">缝纫机的发明和批量生产使服装更加普及，男装开始简化，女装仍然复杂，出现了现代时装业的雏形</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+                
+                <div class="relative mb-16 timeline-item fade-in">
+                    <div class="glassmorphism p-6 max-w-md card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-500/10 text-green-500 rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <i class="fas fa-tshirt"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">现代时尚</h3>
+                        </div>
+                        <p class="text-gray-300 mb-4">20世纪至今</p>
+                        <p class="text-gray-400">服装设计多元化，受艺术运动、社会变革和全球化影响，出现了高级定制、成衣、快时尚等不同模式</p>
+                    </div>
+                    <div class="timeline-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 古代服装起源 -->
+    <section id="ancient" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">古代<span class="highlight">服装起源</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">追溯人类最早的服饰形式，探索古文明如何通过服装表达身份与文化</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glassmorphism overflow-hidden card-hover history-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1545231027-637d2f6210f8?q=80&w=1935" alt="古埃及服装" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">古埃及服饰</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 mb-4">古埃及人主要穿着亚麻制成的服装，气候炎热使服装设计简单轻盈。男性穿着短裙（schenti），女性穿着直筒连衣裙（kalasiris）。</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>尼罗河流域，公元前3100年-公元前30年</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden card-hover history-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1598940603846-a1edd0ef5274?q=80&w=2070" alt="古希腊服装" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">古希腊服饰</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 mb-4">古希腊服装以 draped 款式为主，不使用缝纫。主要服装包括 chiton（男女通用长袍）和 himation（外袍）。服装体现身体自然美，使用羊毛和亚麻面料。</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>爱琴海地区，公元前800年-公元前146年</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism overflow-hidden card-hover history-card fade-in">
+                    <div class="relative h-60 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1964" alt="古罗马服装" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
+                            <h3 class="text-xl font-bold text-white">古罗马服饰</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-400 mb-4">罗马服装受希腊影响但更复杂。主要服装包括 toga（公民身份象征）和 stola（女性长袍）。紫色染料象征地位，服装颜色和样式反映社会等级。</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>意大利半岛，公元前753年-公元476年</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 中世纪服装 -->
+    <section id="medieval" class="py-16 bg-gradient-to-br from-indigo-900/20 to-purple-900/20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">中世纪<span class="highlight">服饰演变</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">探索封建社会如何通过服装表达等级制度与宗教信仰</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="glassmorphism p-8 card-hover fade-in">
+                    <h3 class="text-2xl font-bold mb-4">中世纪服装的社会意义</h3>
+                    <p class="text-gray-400 mb-6">中世纪服装是严格社会等级的视觉体现。法律（"sumptuary laws"）规定不同阶层可穿着的面料、颜色和装饰，确保社会地位一目了然。</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex">
+                            <div class="bg-purple-500/10 text-purple-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">贵族服饰</h4>
+                                <p class="text-gray-400 text-sm">使用昂贵的丝绸、天鹅绒、皮毛，色彩鲜艳，装饰珠宝和金线刺绣</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="bg-pink-500/10 text-pink-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-church"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">宗教服饰</h4>
+                                <p class="text-gray-400 text-sm">神职人员穿着特定颜色和样式的长袍，象征其精神权威和地位</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="bg-blue-500/10 text-blue-500 rounded-lg w-14 h-14 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">平民服装</h4>
+                                <p class="text-gray-400 text-sm">农民和工匠穿着简单的羊毛或亚麻服装，颜色多为自然色调</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 fade-in">
+                    <div class="glassmorphism overflow-hidden history-card">
+                        <img src="https://images.unsplash.com/photo-1579783483459-82a9d81c4ec5?q=80&w=1925" alt="中世纪贵族服装" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold mb-1">贵族女性头饰</h4>
+                            <p class="text-gray-400 text-sm">复杂的头饰如 hennin（锥形帽）象征地位</p>
+                        </div>
+                    </div>
+                    <div class="glassmorphism overflow-hidden history-card">
+                        <img src="https://images.unsplash.com/photo-1578303502595-6b6d757ab357?q=80&w=1925" alt="中世纪骑士服装" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold mb-1">骑士盔甲</h4>
+                            <p class="text-gray-400 text-sm">功能性盔甲发展成身份象征</p>
+                        </div>
+                    </div>
+                    <div class="glassmorphism overflow-hidden history-card">
+                        <img src="https://images.unsplash.com/photo-1547235001-d703406d3f17?q=80&w=2070" alt="中世纪平民服装" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold mb-1">平民日常服装</h4>
+                            <p class="text-gray-400 text-sm">实用简单的束腰外衣和斗篷</p>
+                        </div>
+                    </div>
+                    <div class="glassmorphism overflow-hidden history-card">
+                        <img src="https://images.unsplash.com/photo-1579783483459-82a9d81c4ec5?q=80&w=1925" alt="中世纪宗教服装" class="w-full h-64 object-cover">
+                        <div class="p-4">
+                            <h4 class="font-bold mb-1">宗教服饰</h4>
+                            <p class="text-gray-400 text-sm">特定颜色和样式代表不同神职等级</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文艺复兴时期 -->
+    <section id="renaissance" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 section-title">文艺复兴<span class="highlight">艺术与服装</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">人文主义兴起如何影响服装设计，创造奢华与艺术的黄金时代</p>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-12 fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">文艺复兴时期的服装革命</h3>
+                        <p class="text-gray-400 mb-6">文艺复兴时期（14-17世纪），服装从单纯的功能性转变为艺术表达。受古典艺术复兴和人文主义影响，服装设计开始强调人体美和个人表达。</p>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <span class="px-4 py-2 bg-purple-500/10 text-purple-500 rounded-full">奢华面料</span>
+                            <span class="px-4 py-2 bg-pink-500/10 text-pink-500 rounded-full">精致剪裁</span>
+                            <span class="px-4 py-2 bg-blue-500/10 text-blue-500 rounded-full">复杂装饰</span>
+                            <span class="px-4 py-2 bg-yellow-500/10 text-yellow-500 rounded-full">鲜明色彩</span>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-96 rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1579783483459-82a9d81c4ec5?q=80&w=1925" alt="文艺复兴服装" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-500/10 text-pink-500 rounded-full w-14 h-14 flex items-center justify-center mr-4">
+                            <i class="fas fa-female text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">女性时尚</h3>
+                    </div>
+                    <p class="text-gray-400">文艺复兴时期的女性服装以奢华著称：</p>
+                    <ul class="mt-3 space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>紧身胸衣（corset）塑造V形躯干</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>宽大的钟形裙（farthingale）</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>低领设计展示颈部和胸部</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-pink-500 text-xs mt-2 mr-2"></i>
+                            <span>精致的蕾丝领（ruff）</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6 card-hover fade-in">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-500/10 text-blue-500 rounded-full w-14 h-14 flex items-center justify-center mr-4">
+                            <i class="fas fa-male text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">男性时尚</h3>
+                    </div>
+                    <p class="text-gray-400">男性服装同样精致且强调轮廓：</p>
+                    <ul class="mt-3 space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>填充的南瓜裤（pumpkin hose）</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>合身的上衣（doublet）</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>装饰性切口（slashing）展示内衣</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-circle text-blue-500 text-xs mt-2 mr-2"></i>
+                            <span>精致的蕾丝袖口和领口</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">服装历史之旅</h3>
+                    <p class="text-gray-400">探索人类五千年服饰演变，理解服装如何反映社会变革与文化价值</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">历史时期</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#ancient" class="text-gray-400 hover:text-pink-400 transition-colors">古代文明</a></li>
+                        <li><a href="#medieval" class="text-gray-400 hover:text-pink-400 transition-colors">中世纪</a></li>
+                        <li><a href="#renaissance" class="text-gray-400 hover:text-pink-400 transition-colors">文艺复兴</a></li>
+                        <li><a href="#modern" class="text-gray-400 hover:text-pink-400 transition-colors">现代演变</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">资源</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">博物馆藏品</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">历史文献</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">研究论文</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 text-center">
+                <p class="text-gray-500 text-sm">© 2023 服装历史之旅 | 探索人类服饰五千年演变</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('max-h-0');
+            document.getElementById('mobileMenu').classList.toggle('py-4');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端菜单，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        document.getElementById('mobileMenu').classList.add('max-h-0');
+                        document.getElementById('mobileMenu').classList.remove('py-4');
+                    }
+                }
+            });
+        });
+        
+        // 滚动动画
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('appear');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            observer.observe(element);
+        });
+        
+        // 滚动时改变导航栏样式
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.classList.add('bg-indigo-950');
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.classList.remove('bg-indigo-950');
+            }
+        });
+    </script>
+</body>
+</html>

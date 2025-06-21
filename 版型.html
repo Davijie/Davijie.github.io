@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装版型专业知识 | AI服装导览平台</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            background-attachment: fixed;
+        }
+        
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glassmorphism:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .highlight {
+            color: #ec4899;
+            font-weight: 600;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ec4899;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .pattern-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .silhouette {
+            background: linear-gradient(45deg, #7c3aed, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .body-type-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .body-type-card:hover {
+            transform: scale(1.05) translateY(-10px);
+            z-index: 10;
+        }
+        
+        .pattern-diagonal {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(124, 58, 237, 0.05),
+                rgba(124, 58, 237, 0.05) 10px,
+                rgba(124, 58, 237, 0.1) 10px,
+                rgba(124, 58, 237, 0.1) 20px
+            );
+        }
+        
+        .fabric-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ec4899' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="min-h-screen pattern-bg">
+    <!-- 头部区域 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-ruler-combined text-2xl text-purple-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">服装版型知识库</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#basics" class="nav-link text-gray-300 hover:text-white">版型基础</a>
+                <a href="#types" class="nav-link text-gray-300 hover:text-white">版型分类</a>
+                <a href="#design" class="nav-link text-gray-300 hover:text-white">设计流程</a>
+                <a href="#fit" class="nav-link text-gray-300 hover:text-white">体型匹配</a>
+                <a href="#trends" class="nav-link text-gray-300 hover:text-white">趋势分析</a>
+            </div>
+            
+            <div class="flex space-x-4">
+                <a href="#" class="text-gray-300 hover:text-purple-400">
+                    <i class="fab fa-weixin"></i>
+                </a>
+                <a href="#" class="text-gray-300 hover:text-purple-400">
+                    <i class="fab fa-weibo"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主视觉区 -->
+    <section class="relative py-20 flex items-center justify-center overflow-hidden">
+        <div class="fabric-texture"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
+            <div class="inline-block glassmorphism px-6 py-2 mb-6">
+                <span class="text-purple-400">专业服装知识</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white">探索服装版型的艺术与科学</h1>
+            <p class="text-xl text-gray-200 max-w-3xl mx-auto mb-10">了解服装版型如何塑造风格、影响穿着体验，以及如何根据体型选择完美版型</p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#basics" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-8 rounded-full transition-all duration-300">
+                    开始学习 <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+                <a href="#types" class="glassmorphism hover:bg-indigo-900/80 text-white font-medium py-3 px-8 rounded-full transition-all duration-300">
+                    版型分类
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-4 py-12 max-w-6xl">
+        <!-- 版型基础知识 -->
+        <section id="basics" class="mb-20">
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-ruler"></i>
+                </div>
+                <h2 class="text-3xl font-bold">版型基础知识</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <div class="glassmorphism p-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-purple-300">什么是服装版型？</h3>
+                    <p class="text-gray-300 mb-6">服装版型是指服装在人体上的外部轮廓形状，它决定了服装的整体造型和风格。版型是服装设计的核心要素，直接影响服装的舒适度、功能性和美观性。</p>
+                    <p class="text-gray-300">优秀的版型设计能够完美贴合人体曲线，同时考虑到人体活动时的动态需求，在美观与功能性之间取得平衡。</p>
+                </div>
+                
+                <div class="glassmorphism p-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-purple-300">版型的重要性</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 mt-1">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">视觉效果</h4>
+                                <p class="text-gray-400">版型决定服装的整体轮廓和线条，直接影响穿着者的视觉比例</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 mt-1">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">舒适度</h4>
+                                <p class="text-gray-400">合理的版型提供足够的活动空间，同时保持服装的合身度</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-3 mt-1">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">风格表达</h4>
+                                <p class="text-gray-400">不同版型传达不同的时尚语言和风格态度</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glassmorphism p-8 pattern-diagonal">
+                <h3 class="text-2xl font-semibold mb-6 text-purple-300">版型设计的关键要素</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-indigo-900/30 p-6 rounded-xl">
+                        <div class="text-4xl text-purple-500 mb-4">
+                            <i class="fas fa-drafting-compass"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">比例与平衡</h4>
+                        <p class="text-gray-300">肩宽、腰线、裙摆等各部分的比例关系，创造视觉平衡</p>
+                    </div>
+                    
+                    <div class="bg-indigo-900/30 p-6 rounded-xl">
+                        <div class="text-4xl text-purple-500 mb-4">
+                            <i class="fas fa-vector-square"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">结构线</h4>
+                        <p class="text-gray-300">省道、接缝、褶裥等结构元素塑造服装立体形态</p>
+                    </div>
+                    
+                    <div class="bg-indigo-900/30 p-6 rounded-xl">
+                        <div class="text-4xl text-purple-500 mb-4">
+                            <i class="fas fa-arrows-alt"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">松量与活动量</h4>
+                        <p class="text-gray-300">在合身基础上增加适当松量，保证穿着舒适和活动自由</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 版型分类 -->
+        <section id="types" class="mb-20">
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <h2 class="text-3xl font-bold">服装版型分类</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div class="glassmorphism p-6">
+                    <div class="text-center mb-6">
+                        <div class="silhouette text-7xl font-bold">A</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center">A型版（梯形）</h3>
+                    <p class="text-gray-300 text-center mb-4">上窄下宽，肩部较窄，逐渐向下扩展</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>适合：梨形身材、大腿粗壮者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>风格：优雅、浪漫、复古</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>典型单品：A字裙、伞裙、喇叭裤</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6">
+                    <div class="text-center mb-6">
+                        <div class="silhouette text-7xl font-bold">H</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center">H型版（矩形）</h3>
+                    <p class="text-gray-300 text-center mb-4">直筒设计，肩线、腰线、下摆宽度基本一致</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>适合：矩形身材、追求简约风格者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>风格：现代、简约、中性</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>典型单品：直筒连衣裙、西装外套、直筒裤</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6">
+                    <div class="text-center mb-6">
+                        <div class="silhouette text-7xl font-bold">X</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center">X型版（沙漏型）</h3>
+                    <p class="text-gray-300 text-center mb-4">强调腰部曲线，上下平衡</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>适合：沙漏身材、曲线明显者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>风格：女性化、经典、优雅</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>典型单品：收腰连衣裙、束腰外套、高腰裤</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glassmorphism p-6">
+                    <div class="text-center mb-6">
+                        <div class="silhouette text-7xl font-bold">T</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center">T型版（倒三角）</h3>
+                    <p class="text-gray-300 text-center mb-4">强调肩部设计，上宽下窄</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>适合：倒三角身材、臀部窄小者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>风格：力量感、时尚、前卫</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>典型单品：垫肩西装、斗篷、哈伦裤</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glassmorphism p-6">
+                    <div class="text-center mb-6">
+                        <div class="silhouette text-7xl font-bold">O</div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-center">O型版（茧型）</h3>
+                    <p class="text-gray-300 text-center mb-4">中间宽松，上下收紧，无明确腰线</p>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>适合：苹果型身材、追求舒适者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>风格：休闲、舒适、现代</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-purple-500 mt-1 mr-2"></i>
+                            <span>典型单品：茧型大衣、泡泡袖上衣、娃娃裙</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 版型设计流程 -->
+        <section id="design" class="mb-20">
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-pen-ruler"></i>
+                </div>
+                <h2 class="text-3xl font-bold">版型设计流程</h2>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-12">
+                <div class="relative">
+                    <div class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-purple-500 to-pink-500 ml-4"></div>
+                    
+                    <div class="ml-12 space-y-12">
+                        <div class="relative">
+                            <div class="absolute -left-12 top-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+                                <span class="font-bold">1</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4 text-purple-300">设计构思</h3>
+                            <p class="text-gray-300 mb-4">设计师根据设计主题、流行趋势和市场需求，绘制服装草图，确定款式、廓形和细节。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">灵感收集</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">草图绘制</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">款式确定</span>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <div class="absolute -left-12 top-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+                                <span class="font-bold">2</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4 text-purple-300">原型制作</h3>
+                            <p class="text-gray-300 mb-4">根据设计草图制作基础原型，确定基本尺寸和比例关系。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">立体裁剪</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">平面制版</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">样衣制作</span>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <div class="absolute -left-12 top-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+                                <span class="font-bold">3</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4 text-purple-300">试穿调整</h3>
+                            <p class="text-gray-300 mb-4">在人台上或真人模特上试穿样衣，检查版型的合身度、活动量和视觉效果，进行调整。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">合身度测试</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">活动量评估</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">版型修正</span>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <div class="absolute -left-12 top-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
+                                <span class="font-bold">4</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold mb-4 text-purple-300">工业推版</h3>
+                            <p class="text-gray-300 mb-4">根据确认的样版，推演出不同尺码的系列版型，确保各尺码的比例协调。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">尺码推演</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">放码技术</span>
+                                <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full text-sm">版型验证</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 体型与版型匹配 -->
+        <section id="fit" class="mb-20">
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="text-3xl font-bold">体型与版型匹配指南</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glassmorphism p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-300">了解你的体型</h3>
+                    <p class="text-gray-300 mb-6">选择适合的服装版型首先要了解自己的体型特征。常见体型包括：</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500 mr-4 mt-1">
+                                <i class="fas fa-apple-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">苹果型</h4>
+                                <p class="text-gray-400">上半身较丰满，腰腹部较宽，腿部相对纤细</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500 mr-4 mt-1">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">沙漏型</h4>
+                                <p class="text-gray-400">肩部与臀部宽度相近，腰部明显纤细</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500 mr-4 mt-1">
+                                <i class="fas fa-ruler-combined"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">矩形型</h4>
+                                <p class="text-gray-400">肩部、腰部、臀部宽度相近，曲线不明显</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500 mr-4 mt-1">
+                                <i class="fas fa-pear"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">梨型</h4>
+                                <p class="text-gray-400">臀部比肩部宽，腰部较细，大腿较丰满</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-300">体型与版型搭配建议</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">苹果型身材</h4>
+                            <p class="text-gray-400">建议选择：H型、A型版型</p>
+                            <p class="text-gray-400">避免：过于紧身或高腰设计</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">沙漏型身材</h4>
+                            <p class="text-gray-400">建议选择：X型、修身版型</p>
+                            <p class="text-gray-400">避免：过于宽松的直筒设计</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">矩形身材</h4>
+                            <p class="text-gray-400">建议选择：X型、A型版型</p>
+                            <p class="text-gray-400">避免：过于宽松的H型设计</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">梨型身材</h4>
+                            <p class="text-gray-400">建议选择：A型、X型版型</p>
+                            <p class="text-gray-400">避免：紧身下装和臀部装饰</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 版型趋势分析 -->
+        <section id="trends" class="mb-12">
+            <div class="flex items-center mb-10">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="text-3xl font-bold">2024服装版型趋势</h2>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-6">未来版型设计方向</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-4 mt-1">
+                                    <i class="fas fa-expand-arrows-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">超比例设计</h4>
+                                    <p class="text-gray-400">夸张的肩部设计、超长袖型、阔腿裤等打破常规比例的版型</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-4 mt-1">
+                                    <i class="fas fa-recycle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">可持续版型</h4>
+                                    <p class="text-gray-400">零浪费裁剪技术，最大化利用面料，减少生产废料</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-4 mt-1">
+                                    <i class="fas fa-tshirt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">多功能版型</h4>
+                                    <p class="text-gray-400">可调节、可变形设计，一件服装多种穿着方式</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="bg-gray-800/50 rounded-xl p-6">
+                            <h4 class="text-xl font-semibold mb-4 text-center">流行版型比例</h4>
+                            <div class="h-64">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12 mt-12">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">服装版型知识库</h3>
+                    <p class="text-gray-400">提供专业的服装版型知识、设计技巧和搭配建议，帮助您深入理解服装结构与设计艺术。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">知识分类</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">版型基础</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">版型分类</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">设计流程</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">体型匹配</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">联系我们</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-2"></i> pattern@fashion-ai.com</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone mr-2"></i> +86 400-987-6543</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> 上海市时尚设计中心</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">订阅更新</h3>
+                    <div class="relative">
+                        <input type="email" placeholder="您的邮箱地址" class="w-full py-2 px-4 rounded-full bg-indigo-900/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                        <button class="absolute right-1 top-1/2 transform -translate-y-1/2 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-1 px-3 text-sm">
+                            订阅
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-sm mt-2">获取最新的版型设计趋势和技巧</p>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 服装版型知识库. 保留所有权利.</p>
+                <div class="text-gray-500 text-sm">
+                    <span>created by <a href="#" class="text-pink-400 hover:text-pink-300">AI服装导览平台</a></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 图表初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['宽松版型', '修身版型', '结构版型', '超比例设计', '复古版型'],
+                    datasets: [{
+                        label: '流行指数',
+                        data: [85, 75, 92, 78, 65],
+                        backgroundColor: [
+                            'rgba(124, 58, 237, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(167, 139, 250, 0.7)',
+                            'rgba(192, 132, 252, 0.7)',
+                            'rgba(236, 72, 153, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(124, 58, 237, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(167, 139, 250, 1)',
+                            'rgba(192, 132, 252, 1)',
+                            'rgba(236, 72, 153, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#cbd5e1'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#cbd5e1'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

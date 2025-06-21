@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024春夏女装趋势指南</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #2a0a3a 0%, #1a0828 100%);
+            color: #f0e6ff;
+            overflow-x: hidden;
+        }
+
+        .glassmorphism {
+            background: rgba(50, 20, 80, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 10, 50, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px 0 rgba(80, 30, 120, 0.4);
+        }
+
+        .highlight-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .highlight-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background-color: rgba(180, 140, 255, 0.4);
+            z-index: -1;
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #8a2be2 0%, #9932cc 100%);
+        }
+
+        .shadow-glow {
+            box-shadow: 0 10px 25px -5px rgba(138, 43, 226, 0.5);
+        }
+
+        .mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            margin: 0.5rem;
+            border-radius: 0.75rem;
+            background: rgba(50, 20, 80, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 10, 50, 0.3);
+            transform-origin: top;
+            transform: scaleY(0);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .mobile-menu.active {
+            transform: scaleY(1);
+            opacity: 1;
+        }
+
+        .trend-color {
+            height: 80px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .fashion-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            height: 300px;
+        }
+
+        .fashion-card img {
+            transition: transform 0.5s ease;
+        }
+
+        .fashion-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .fashion-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(40, 10, 70, 0.9), transparent);
+            padding: 20px;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 导航条 -->
+    <nav class="glassmorphism sticky top-0 z-50 p-4 mb-8" id="mainNav">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
+                <i class="fas fa-tshirt mr-2"></i>2024春夏女装趋势
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#trends" class="text-gray-300 hover:text-purple-300 transition-colors">流行趋势</a>
+                <a href="#colors" class="text-gray-300 hover:text-purple-300 transition-colors">流行色彩</a>
+                <a href="#styles" class="text-gray-300 hover:text-purple-300 transition-colors">款式风格</a>
+                <a href="#outfits" class="text-gray-300 hover:text-purple-300 transition-colors">场合穿搭</a>
+            </div>
+            <button class="md:hidden text-gray-300 focus:outline-none" id="mobileMenuButton" aria-label="导航菜单">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- 移动端导航菜单 -->
+            <div class="mobile-menu md:hidden" id="mobileMenu">
+                <a href="#trends" class="text-gray-300 hover:text-purple-300 transition-colors flex items-center">
+                    <i class="fas fa-chart-line mr-3 text-purple-300"></i>流行趋势
+                </a>
+                <a href="#colors" class="text-gray-300 hover:text-purple-300 transition-colors flex items-center">
+                    <i class="fas fa-palette mr-3 text-purple-300"></i>流行色彩
+                </a>
+                <a href="#styles" class="text-gray-300 hover:text-purple-300 transition-colors flex items-center">
+                    <i class="fas fa-cut mr-3 text-purple-300"></i>款式风格
+                </a>
+                <a href="#outfits" class="text-gray-300 hover:text-purple-300 transition-colors flex items-center">
+                    <i class="fas fa-user-tie mr-3 text-purple-300"></i>场合穿搭
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 头部横幅 -->
+    <header class="container mx-auto py-16 px-4 md:px-8 relative">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-300 to-pink-300 text-transparent bg-clip-text">
+                2024春夏女装趋势指南
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8">探索个性与舒适并重的时尚新纪元</p>
+        </div>
+    </header>
+
+    <!-- 流行趋势部分 -->
+    <section id="trends" class="container mx-auto py-12 px-4 md:px-8">
+        <div class="glassmorphism p-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white mr-3 shadow-glow">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                2024春夏女装流行趋势
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="mb-4 text-gray-300">2024年春夏女装设计更加注重<span class="highlight-text">个性化和舒适度</span>，复古风与现代元素的融合成为主流趋势。自然元素被大量运用，花卉图案和轻盈面料营造清新脱俗的气息。</p>
+
+                    <div class="my-6">
+                        <h4 class="font-semibold text-lg mb-3 text-purple-200">核心趋势亮点：</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white mr-3 mt-1">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-purple-100">自然元素</h5>
+                                    <p class="text-sm text-gray-300">花卉图案和有机纹理成为关键设计元素，呼应环保理念</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-pink-600 flex items-center justify-center text-white mr-3 mt-1">
+                                    <i class="fas fa-recycle"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-purple-100">可持续时尚</h5>
+                                    <p class="text-sm text-gray-300">环保材料制作的服装正逐渐成为时尚界的主流选择</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white mr-3 mt-1">
+                                    <i class="fas fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-purple-100">层次感设计</h5>
+                                    <p class="text-sm text-gray-300">透明材质和镂空设计使造型既具层次感又不失性感魅力</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="fashion-card">
+                        <img src="https://p3-search.byteimg.com/obj/labis/c4477d65c6c4b3b18745dc68d530f9ae" alt="2024春夏女装流行款式" class="w-full h-full object-cover">
+                        <div class="overlay">
+                            <h3 class="text-xl font-bold">复古与现代的完美融合</h3>
+                            <p class="text-sm">2024春夏女装趋势</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 流行色彩部分 -->
+    <section id="colors" class="container mx-auto py-12 px-4 md:px-8">
+        <div class="glassmorphism p-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white mr-3 shadow-glow">
+                    <i class="fas fa-palette"></i>
+                </div>
+                2024春夏流行色彩
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="trend-color" style="background-color: #FF9AA2;">
+                    <span>柔和香桃色</span>
+                </div>
+                <div class="trend-color" style="background-color: #FFB7B2;">
+                    <span>光辉红</span>
+                </div>
+                <div class="trend-color" style="background-color: #FFDAC1;">
+                    <span>杏黄色</span>
+                </div>
+                <div class="trend-color" style="background-color: #E2F0CB;">
+                    <span>水感色调</span>
+                </div>
+                <div class="trend-color" style="background-color: #B5EAD7;">
+                    <span>海洋珊瑚色</span>
+                </div>
+                <div class="trend-color" style="background-color: #C7CEEA;">
+                    <span>宝石色调</span>
+                </div>
+                <div class="trend-color" style="background-color: #8C6A5D;">
+                    <span>粉末咖啡色</span>
+                </div>
+                <div class="trend-color" style="background-color: #B76E79;">
+                    <span>暖调粉色</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-gray-300 mb-4">粉色在2024春夏愈发强劲，拓展为冷色调和暖色调；水感色调依然关键，宝石色调凭借其跨季节属性持续表现出色。</p>
+                    <p class="text-gray-300">杏黄色、玉米穗金、光辉红和海洋珊瑚色等活力色调响应了人们提振情绪的迫切需求，同时兼顾商业吸引力；棕色调依然重要，包括深沉粉末咖啡色及温暖赤土色。</p>
+                </div>
+                <div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://p3-search.byteimg.com/obj/labis/38ef3f54f4a6af88e3b8684d9a1667d8" alt="2024春夏流行色彩" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/511b436676c135dde2474104bc10b65b" alt="2024春夏流行色彩" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/ce8a254602041d7ea3529851b31550ab" alt="2024春夏流行色彩" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/5b63e0e6a37fd01bf5cf6caa7f0cb0e1" alt="2024春夏流行色彩" class="rounded-lg h-40 object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 款式风格部分 -->
+    <section id="styles" class="container mx-auto py-12 px-4 md:px-8">
+        <div class="glassmorphism p-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white mr-3 shadow-glow">
+                    <i class="fas fa-cut"></i>
+                </div>
+                关键时尚单品
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="card-hover glassmorphism p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">梭织上衣</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">凸显身材曲线的版型和细节回归，适于打造早晚皆宜造型的高级基本款受到追捧。</p>
+                    <img src="https://p3-search.byteimg.com/obj/labis/ac65366af69bfbccbc49e8daf8282ccd" alt="梭织上衣" class="rounded-lg w-full h-48 object-cover">
+                </div>
+
+                <div class="card-hover glassmorphism p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-pink-600 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-vest"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">裤装</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">设计焦点转向舒适版型及经典剪裁，实用细节和光滑纹理更新设计。</p>
+                    <img src="https://p3-search.byteimg.com/obj/labis/4851bda8805a2241821173369c31a0ef" alt="裤装" class="rounded-lg w-full h-48 object-cover">
+                </div>
+
+                <div class="card-hover glassmorphism p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-skirt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">半身裙</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">凸显身材曲线的半裙再度流行，迷你裙长和简约廓形成为2024春夏的设计关键。</p>
+                    <img src="https://p3-search.byteimg.com/obj/labis/ce8a254602041d7ea3529851b31550ab" alt="半身裙" class="rounded-lg w-full h-48 object-cover">
+                </div>
+
+                <div class="card-hover glassmorphism p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white mr-4">
+                            <i class="fas fa-dress"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold">连衣裙</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">关键的连衣裙设计兼顾了时尚与百搭，层搭与镂空也是关键设计元素。</p>
+                    <img src="https://p3-search.byteimg.com/obj/labis/dfeac8035919e9c6042ec4229abee9c9" alt="连衣裙" class="rounded-lg w-full h-48 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 场合穿搭部分 -->
+    <section id="outfits" class="container mx-auto py-12 px-4 md:px-8">
+        <div class="glassmorphism p-8 mb-16">
+            <h2 class="text-3xl font-bold mb-6 flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white mr-3 shadow-glow">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                场合穿搭指南
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card-hover">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-200">商务场合</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <img src="https://p3-search.byteimg.com/obj/labis/fb54858f5868a231b0c25628b17b2156" alt="商务穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/c4477d65c6c4b3b18745dc68d530f9ae" alt="商务穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/ac65366af69bfbccbc49e8daf8282ccd" alt="商务穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/0e788874a56b9cbde7300ccc88a261e4" alt="商务穿搭" class="rounded-lg h-40 object-cover">
+                    </div>
+                    <p class="text-gray-300">商务场合推荐选择简约剪裁的西装套装或连衣裙，搭配中性色调或柔和的流行色，展现专业又不失时尚的形象。</p>
+                </div>
+
+                <div class="card-hover">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-200">休闲场合</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <img src="https://p3-search.byteimg.com/obj/labis/368a27b477175f2228200490e192f334" alt="休闲穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/162b19438db5a4bf8dd1dff3728524e1" alt="休闲穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/5e667d98ca1b4bed00e2211ae34c6a94" alt="休闲穿搭" class="rounded-lg h-40 object-cover">
+                        <img src="https://p3-search.byteimg.com/obj/labis/ce8a254602041d7ea3529851b31550ab" alt="休闲穿搭" class="rounded-lg h-40 object-cover">
+                    </div>
+                    <p class="text-gray-300">休闲场合可以大胆尝试流行色彩和图案，如花卉印花上衣搭配简约裤装，或层搭设计的连衣裙，展现个性与活力。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="container mx-auto py-8 px-4 text-center text-gray-400 text-sm">
+        <p>created by <a href="https://space.coze.cn" class="text-purple-300 hover:text-purple-200">coze space</a></p>
+        <p>页面内容均由 AI 生成，仅供参考</p>
+    </footer>
+
+    <script>
+        // 添加滚动动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // 点击导航链接后关闭移动端菜单
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    if (mobileMenu.classList.contains('active')) {
+                        mobileMenu.classList.remove('active');
+                        // 同时切换图标回汉堡按钮
+                        const menuIcon = document.querySelector('#mobileMenuButton i');
+                        menuIcon.classList.remove('fa-times');
+                        menuIcon.classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // 移动端导航菜单切换
+            const menuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            menuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+
+                // 切换图标
+                const icon = this.querySelector('i');
+                if (mobileMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // 点击页面其他区域关闭移动端菜单
+            document.addEventListener('click', function(event) {
+                const isClickInsideNav = document.getElementById('mainNav').contains(event.target);
+
+                if (!isClickInsideNav && mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    const icon = menuButton.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

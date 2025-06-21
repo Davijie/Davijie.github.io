@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能服装专业导览平台</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            background-image: radial-gradient(circle at 10% 20%, rgba(56, 33, 89, 0.5) 0%, rgba(15, 23, 42, 0.9) 90%);
+        }
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+        }
+        .answer-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease, opacity 0.5s ease;
+            opacity: 0;
+        }
+        .answer-box.active {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .answer-content {
+            line-height: 1.8;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- 简约头部 -->
+    <header class="bg-indigo-950/90 backdrop-blur-md py-4">
+        <div class="container mx-auto px-4 flex justify-center items-center">
+            <div class="flex items-center">
+                <i class="fas fa-tshirt text-2xl text-pink-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">AI服装导览</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow flex items-center justify-center">
+        <section class="w-full max-w-3xl px-4 py-12">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">智能服装知识导览</h2>
+                <p class="text-xl text-gray-300">输入您的服装相关问题，获取专业解答</p>
+            </div>
+            
+            <!-- 搜索区域 -->
+            <div class="glassmorphism p-6 mb-8 rounded-2xl shadow-xl">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="例如：如何选择适合夏季的面料？" 
+                        class="w-full py-4 px-6 rounded-full bg-white/10 backdrop-blur-md text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 text-lg"
+                    >
+                    <button 
+                        id="searchButton" 
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-full p-3 transition-all duration-300"
+                    >
+                        <i class="fas fa-search text-lg"></i>
+                    </button>
+                </div>
+                
+                <!-- 热门问题示例 -->
+                <div class="mt-6">
+                    <p class="text-gray-400 mb-3">热门问题示例：</p>
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <span class="text-sm bg-indigo-900/50 text-gray-300 px-3 py-1.5 rounded-full cursor-pointer hover:bg-indigo-800 transition-colors" onclick="setQuestion(this)">面料知识入门</span>
+                        <span class="text-sm bg-indigo-900/50 text-gray-300 px-3 py-1.5 rounded-full cursor-pointer hover:bg-indigo-800 transition-colors" onclick="setQuestion(this)">服装生产流程</span>
+                        <span class="text-sm bg-indigo-900/50 text-gray-300 px-3 py-1.5 rounded-full cursor-pointer hover:bg-indigo-800 transition-colors" onclick="setQuestion(this)">2024流行趋势</span>
+                        <span class="text-sm bg-indigo-900/50 text-gray-300 px-3 py-1.5 rounded-full cursor-pointer hover:bg-indigo-800 transition-colors" onclick="setQuestion(this)">如何测量尺寸</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 回答区域 -->
+            <div id="answerBox" class="answer-box glassmorphism p-6 rounded-2xl shadow-xl">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">AI服装助手回答</h3>
+                </div>
+                
+                <div id="answerContent" class="answer-content text-gray-300 pl-2">
+                    <!-- 回答内容将通过JavaScript填充 -->
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-700">
+                    <p class="text-gray-400 text-sm mb-2">是否解决了您的问题？</p>
+                    <div class="flex space-x-3">
+                        <button class="flex-1 py-2 px-4 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors">
+                            <i class="fas fa-thumbs-up mr-2"></i>有帮助
+                        </button>
+                        <button class="flex-1 py-2 px-4 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors">
+                            <i class="fas fa-thumbs-down mr-2"></i>无帮助
+                        </button>
+                        <button class="flex-1 py-2 px-4 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                            <i class="fas fa-redo mr-2"></i>重新生成
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 简约底部 -->
+    <footer class="bg-indigo-950/90 py-6 text-center">
+        <p class="text-gray-500 text-sm">© 2024 AI服装导览平台 | 智能服装知识库</p>
+    </footer>
+
+    <script>
+        // 设置问题函数
+        function setQuestion(element) {
+            document.getElementById('searchInput').value = element.textContent;
+        }
+        
+        // 搜索功能
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const question = document.getElementById('searchInput').value.trim();
+            if (!question) {
+                alert('请输入问题');
+                return;
+            }
+            
+            // 显示加载状态
+            const answerContent = document.getElementById('answerContent');
+            answerContent.innerHTML = `
+                <div class="flex items-center justify-center py-8">
+                    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-pink-500 mr-3"></div>
+                    <span>正在生成专业回答...</span>
+                </div>
+            `;
+            
+            // 显示回答框
+            document.getElementById('answerBox').classList.add('active');
+            
+            // 模拟AI生成回答（实际应用中替换为真实API调用）
+            setTimeout(() => {
+                // 根据问题生成不同回答
+                let answer = '';
+                if (question.includes('面料')) {
+                    answer = `
+                        <p class="mb-4"><strong>夏季面料选择指南：</strong></p>
+                        <p class="mb-3">夏季服装面料应注重透气性、吸湿排汗性和舒适度。以下是几种适合夏季的优质面料：</p>
+                        
+                        <div class="space-y-4 mb-5">
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-leaf text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">棉质面料</p>
+                                    <p class="text-gray-400 text-sm">纯棉面料透气性好、吸湿性强，穿着舒适。推荐选择高支数的棉质面料，如埃及棉或海岛棉，质地更轻薄。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-snowflake text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">亚麻面料</p>
+                                    <p class="text-gray-400 text-sm">亚麻具有极佳的透气性和快速干燥特性，是炎热天气的理想选择。但需注意其易皱特性。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-recycle text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">再生纤维素纤维</p>
+                                    <p class="text-gray-400 text-sm">如莫代尔、莱赛尔等面料，具有丝绸般的光泽和手感，吸湿透气性好，且环保可持续。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="mb-3"><strong>应避免的面料：</strong></p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-400 text-sm mb-5">
+                            <li>合成纤维（如涤纶、尼龙）透气性差，容易闷热</li>
+                            <li>厚重毛料不适合高温环境</li>
+                            <li>有涂层面料会影响透气性</li>
+                        </ul>
+                        
+                        <div class="bg-indigo-900/30 p-4 rounded-lg border border-indigo-700/50">
+                            <p class="text-sm text-pink-400"><i class="fas fa-lightbulb mr-2"></i>专业建议：选择面料时注意纱线密度（支数），夏季服装建议选择60支以上的高支面料，更轻薄透气。</p>
+                        </div>
+                    `;
+                } else if (question.includes('生产流程') || question.includes('生产流程')) {
+                    answer = `
+                        <p class="mb-4"><strong>服装生产全流程解析：</strong></p>
+                        
+                        <div class="relative h-48 rounded-lg overflow-hidden mb-5">
+                            <div class="absolute inset-0 bg-gradient-to-r from-purple-900/40 to-indigo-900/40 flex items-center justify-center">
+                                <p class="text-xl font-bold">服装生产流程图</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-3 mb-5">
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mb-2">
+                                    <i class="fas fa-pen-fancy"></i>
+                                </div>
+                                <p class="text-sm font-semibold">设计</p>
+                            </div>
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-2">
+                                    <i class="fas fa-ruler-combined"></i>
+                                </div>
+                                <p class="text-sm font-semibold">打版</p>
+                            </div>
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
+                                    <i class="fas fa-cut"></i>
+                                </div>
+                                <p class="text-sm font-semibold">裁剪</p>
+                            </div>
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 mb-2">
+                                    <i class="fas fa-seedling"></i>
+                                </div>
+                                <p class="text-sm font-semibold">缝制</p>
+                            </div>
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-2">
+                                    <i class="fas fa-tshirt"></i>
+                                </div>
+                                <p class="text-sm font-semibold">整烫</p>
+                            </div>
+                            <div class="glassmorphism p-3 text-center">
+                                <div class="w-10 h-10 mx-auto rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-2">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <p class="text-sm font-semibold">质检</p>
+                            </div>
+                        </div>
+                        
+                        <p class="mb-3">服装生产通常包含以下关键步骤：</p>
+                        <ol class="list-decimal pl-5 space-y-2 mb-4 text-gray-400">
+                            <li><strong>设计与开发</strong>：设计师根据趋势和市场需求创作设计稿</li>
+                            <li><strong>打版与样品制作</strong>：将设计转化为实物样衣</li>
+                            <li><strong>面料采购与检验</strong>：采购符合要求的面辅料</li>
+                            <li><strong>裁剪</strong>：按版型精确裁剪面料</li>
+                            <li><strong>缝制</strong>：将裁片缝制成完整服装</li>
+                            <li><strong>整烫与后处理</strong>：使服装平整并做特殊效果处理</li>
+                            <li><strong>质量检查</strong>：确保产品符合质量标准</li>
+                            <li><strong>包装出货</strong>：最终包装并准备发货</li>
+                        </ol>
+                        
+                        <div class="bg-indigo-900/30 p-4 rounded-lg border border-indigo-700/50">
+                            <p class="text-sm text-pink-400"><i class="fas fa-info-circle mr-2"></i>生产周期：普通服装从设计到出货通常需要45-60天，快时尚品牌可能缩短至2-3周。</p>
+                        </div>
+                    `;
+                } else if (question.includes('2024') || question.includes('趋势')) {
+                    answer = `
+                        <p class="mb-4"><strong>2024年服装流行趋势分析：</strong></p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-5">
+                            <div class="relative h-40 rounded-lg overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-b from-pink-700/40 to-purple-900/40 flex items-end p-3">
+                                    <p class="text-white font-semibold">柔和粉彩色系</p>
+                                </div>
+                            </div>
+                            <div class="relative h-40 rounded-lg overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-b from-blue-700/40 to-teal-900/40 flex items-end p-3">
+                                    <p class="text-white font-semibold">可持续面料</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="mb-3">2024年春夏服装趋势主要围绕以下核心主题：</p>
+                        
+                        <div class="space-y-4 mb-5">
+                            <div>
+                                <p class="font-semibold text-pink-400 mb-2">1. 新浪漫主义</p>
+                                <p class="text-gray-400 text-sm mb-3">柔和飘逸的连衣裙、荷叶边装饰、蕾丝细节和粉彩色系成为关键元素。数码薰衣草、宁静蓝和桃粉色是主打色。</p>
+                            </div>
+                            
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">2. 可持续时尚</p>
+                                <p class="text-gray-400 text-sm mb-3">再生纤维、有机棉和可降解材料成为设计师首选。消费者更加注重服装的环保认证和可追溯性。</p>
+                            </div>
+                            
+                            <div>
+                                <p class="font-semibold text-yellow-400 mb-2">3. 90年代复兴</p>
+                                <p class="text-gray-400 text-sm mb-3">宽松牛仔裤、工装风、迷你裙和运动休闲风强势回归，搭配复古配饰和厚底鞋。</p>
+                            </div>
+                            
+                            <div>
+                                <p class="font-semibold text-purple-400 mb-2">4. 功能性与时尚结合</p>
+                                <p class="text-gray-400 text-sm">多口袋设计、可转换服装（如两穿外套）和防水透气面料成为都市通勤新宠。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-pink-700/20 to-purple-700/20 p-4 rounded-lg border border-pink-700/30 mb-4">
+                            <p class="text-sm"><i class="fas fa-star mr-2 text-yellow-400"></i><strong>关键单品：</strong>超大西装外套、工装裤、针织连衣裙、厚底乐福鞋</p>
+                        </div>
+                        
+                        <div class="bg-indigo-900/30 p-4 rounded-lg border border-indigo-700/50">
+                            <p class="text-sm text-pink-400"><i class="fas fa-shopping-bag mr-2"></i>购买建议：投资高品质的基础款，搭配当季流行配饰，打造可持续的时尚衣橱。</p>
+                        </div>
+                    `;
+                } else {
+                    // 默认回答
+                    answer = `
+                        <p class="mb-4"><strong>服装知识综合解答：</strong></p>
+                        <p class="mb-4">感谢您的提问！以下是根据您的查询提供的专业服装知识解答：</p>
+                        
+                        <div class="space-y-4 mb-5">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-fabric"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">面料选择</p>
+                                    <p class="text-gray-400 text-sm">根据季节和用途选择面料：夏季优选棉麻等透气材质，冬季选择羊毛、羊绒等保暖材质。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-ruler"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">尺寸测量</p>
+                                    <p class="text-gray-400 text-sm">准确测量身体尺寸是选择合身服装的基础。主要测量点包括胸围、腰围、臀围和肩宽。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mr-3 mt-1 flex-shrink-0">
+                                    <i class="fas fa-tshirt"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">服装保养</p>
+                                    <p class="text-gray-400 text-sm">不同面料需不同护理方式：羊毛建议干洗，棉麻可机洗但需低温，真丝需手洗并避免暴晒。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-indigo-900/30 p-4 rounded-lg border border-indigo-700/50">
+                            <p class="text-sm text-pink-400"><i class="fas fa-comment mr-2"></i>如需更具体的解答，请提供更多问题细节，我将为您提供更精准的专业建议。</p>
+                        </div>
+                    `;
+                }
+                
+                answerContent.innerHTML = answer;
+                
+                // 添加淡入动画
+                answerContent.classList.add('fade-in');
+            }, 1500);
+        });
+        
+        // 支持按Enter键搜索
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('searchButton').click();
+            }
+        });
+    </script>
+</body>
+</html>

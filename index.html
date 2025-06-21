@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能服装专业导览平台</title>
+    <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .highlight {
+            color: #ec4899;
+            font-weight: 600;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.3);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ec4899;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .mobile-menu.active {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 头部区域 -->
+    <header class="sticky top-0 z-50 bg-indigo-950/90 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-tshirt text-2xl text-pink-500 mr-2"></i>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">AI服装导览</h1>
+            </div>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="#knowledge" class="nav-link text-gray-300 hover:text-white">服装知识</a>
+                <a href="#production" class="nav-link text-gray-300 hover:text-white">生产步骤</a>
+                <a href="#trends" class="nav-link text-gray-300 hover:text-white">时尚趋势</a>
+                <a href="#community" class="nav-link text-gray-300 hover:text-white">互动社区</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="menuToggle" class="text-gray-300 hover:text-white focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="mobile-menu md:hidden bg-indigo-950/95">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+                <a href="#knowledge" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">服装知识</a>
+                <a href="#production" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">生产步骤</a>
+                <a href="#trends" class="py-2 text-gray-300 hover:text-white border-b border-gray-800">时尚趋势</a>
+                <a href="#community" class="py-2 text-gray-300 hover:text-white">互动社区</a>
+            </div>
+        </div>
+    </header>
+<!-- 主视觉区 -->
+<section class="relative h-96 flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/70 to-purple-900/70 z-0"></div>
+    <img src="https://s.coze.cn/image/tX_Cj1a1rwk/" alt="服装设计师工作场景" class="absolute inset-0 w-full h-full object-cover z-0">
+    
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 text-white">探索服装世界的智能导览</h2>
+        <p class="text-xl text-gray-200 mb-8">连接各类服装知识，用通俗语言解析服装生产全流程</p>
+        
+        <div class="relative max-w-xl mx-auto">
+            <!-- 修改后的搜索框 - 添加了readonly属性和onclick事件 -->
+            <input 
+                type="text" 
+                placeholder="点击搜索服装知识..." 
+                class="w-full py-3 px-6 rounded-full bg-white/20 backdrop-blur-md text-white placeholder-gray-300 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 cursor-pointer"
+                readonly
+                onclick="window.location.href='问答页.html'"
+            >
+            <!-- 修改后的按钮 - 添加了onclick事件 -->
+            <button 
+                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-pink-500 hover:bg-pink-600 text-white rounded-full p-2"
+                onclick="window.location.href='问答页.html'"
+            >
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+    <!-- 主要内容区 -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- 服装知识 -->
+        <section id="knowledge" class="mb-20">
+            <div class="flex items-center mb-8">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2 class="text-3xl font-bold">服装知识百科</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="面料.html" class="glassmorphism p-6 card-hover">
+                    <div class="w-16 h-16 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-500 mb-4">
+                        <i class="fas fa-fabric text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">面料知识</h3>
+                    <p class="text-gray-300 mb-4">了解各种面料的特性、优缺点及适用场景，从天然纤维到合成材料全面解析。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>
+                
+                <a href="版型.html" class="glassmorphism p-6 card-hover">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+                        <i class="fas fa-ruler-combined text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">版型设计</h3>
+                    <p class="text-gray-300 mb-4">探索不同服装版型的设计原理，如何根据体型选择最适合的剪裁方式。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>
+                
+                <a href="历史.html" class="glassmorphism p-6 card-hover">
+                    <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-4">
+                        <i class="fas fa-history text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">服装历史</h3>
+                    <p class="text-gray-300 mb-4">追溯服装发展演变历程，了解不同时期、不同文化的服饰特点与象征意义。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        了解更多 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>
+            </div>
+        </section>
+
+        <!-- 生产步骤 -->
+        <section id="production" class="mb-20">
+            <div class="flex items-center mb-8">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h2 class="text-3xl font-bold">服装生产步骤</h2>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4">从设计到成衣的全流程</h3>
+                        <p class="text-gray-300 mb-6">服装生产是一个复杂而精密的过程，涉及多个专业环节的协同配合。我们用通俗易懂的语言为您解析每个步骤。</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mr-3 mt-1">
+                                    <span class="font-bold">1</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">设计构思</h4>
+                                    <p class="text-gray-400 text-sm">设计师根据流行趋势和市场需求绘制草图，确定款式、颜色和面料。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mr-3 mt-1">
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">打版制作</h4>
+                                    <p class="text-gray-400 text-sm">将设计图转化为实际纸样，确保尺寸精准，结构合理。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-64 md:h-80 rounded-xl overflow-hidden">
+                        <img src="https://s.coze.cn/image/yYx-AFsDUEQ/" alt="服装生产线" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <a href="裁剪.html" class="glassmorphism p-6 card-hover">
+                    <div class="w-16 h-16 rounded-full bg-teal-500/10 flex items-center justify-center text-teal-500 mb-4">
+                        <i class="fas fa-cut"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">裁剪工艺</h3>
+                    <p class="text-gray-300 mb-4">了解如何高效精准地裁剪面料，减少浪费，提高材料利用率。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        查看详情 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>
+                
+                <a href="https://space.coze.cn/s/SMPz6S0N1_E/" class="glassmorphism p-6 card-hover">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 mb-4">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">缝制技术</h3>
+                    <p class="text-gray-300 mb-4">探索不同缝制方法的适用场景，从平缝到包缝的各种技巧。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        查看详情 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>
+                <a href="后整理.html" class="glassmorphism p-6 card-hover block">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">后整理</h3>
+                    <p class="text-gray-300 mb-4">了解水洗、熨烫、包装等后整理工序如何提升成衣品质。</p>
+                    <!-- <a href="#" class="text-pink-400 hover:text-pink-300 flex items-center">
+                        查看详情 <i class="fas fa-arrow-right ml-2"></i>
+                    </a> -->
+                </a>                
+                
+<!-- <a href="https://space.coze.cn/s/YwjtqqBEHaU/" class="glassmorphism p-6 card-hover block" target="_blank">
+    <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 mb-4">
+        <i class="fas fa-tshirt"></i>
+    </div>
+    <h3 class="text-xl font-semibold mb-3">后整理</h3>
+    <p class="text-gray-300 mb-4">了解水洗、熨烫、包装等后整理工序如何提升成衣品质。</p>
+    <div class="text-pink-400 hover:text-pink-300 flex items-center">
+        查看详情 <i class="fas fa-arrow-right ml-2"></i>
+    </div>
+</a> -->
+            </div>
+        </section>
+
+        <!-- 时尚趋势 -->
+        <section id="trends" class="mb-20">
+            <div class="flex items-center mb-8">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="text-3xl font-bold">时尚趋势分析</h2>
+            </div>
+            
+            <div class="glassmorphism p-8 mb-8">
+                <h3 class="text-2xl font-semibold mb-6">2024年春夏流行趋势</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-4 h-4 rounded-full bg-pink-500 mr-3"></div>
+                            <h4 class="font-semibold">色彩趋势</h4>
+                        </div>
+                        <p class="text-gray-300 mb-6">本季流行柔和粉彩色系与高饱和亮色并存，特别是数码薰衣草、桃粉色和宁静蓝备受青睐。</p>
+                        
+                        <div class="flex items-center mb-4">
+                            <div class="w-4 h-4 rounded-full bg-purple-500 mr-3"></div>
+                            <h4 class="font-semibold">面料趋势</h4>
+                        </div>
+                        <p class="text-gray-300">可持续面料持续升温，再生纤维、有机棉和可降解材料成为设计师首选。</p>
+                    </div>
+                    
+                    <div class="relative h-64 rounded-xl overflow-hidden">
+                        <img src="https://s.coze.cn/image/7iJFBSy2f8E/" alt="2024春夏时装秀" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <a href="男装.html" class="glassmorphism p-6 card-hover block">
+                    <div class="w-full h-48 rounded-t-lg overflow-hidden mb-4">
+                        <img src="https://s.coze.cn/image/kJt8frU5vng/" alt="男装潮流" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">男装趋势</h3>
+                    <p class="text-gray-300 text-sm">点击查看2024春夏男装流行趋势</p>
+                </a>
+             <a href="2024春夏女装趋势.html" class="glassmorphism p-6 card-hover block">
+                    <div class="w-full h-48 rounded-t-lg overflow-hidden mb-4">
+                        <img src="https://s.coze.cn/image/8Gc5rthPwC0/" alt="女装潮流" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">女装趋势</h3>
+                    <p class="text-gray-300 text-sm">点击查看2024春夏女装流行趋势</p>
+                </a>
+
+
+            </div>
+        </section>
+
+        <!-- 互动社区 -->
+        <section id="community" class="mb-12">
+            <div class="flex items-center mb-8">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center text-white mr-4">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="text-3xl font-bold">互动社区</h2>
+            </div>
+            
+            <div class="glassmorphism p-8">
+                <h3 class="text-2xl font-semibold mb-6">与服装爱好者交流</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-gray-300 mb-6">加入我们的社区，与设计师、生产专家和时尚爱好者交流经验，分享见解。</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 mr-3">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">专业讨论</h4>
+                                    <p class="text-gray-400 text-sm">与行业专家探讨技术细节</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mr-3">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">创意分享</h4>
+                                    <p class="text-gray-400 text-sm">展示你的设计作品获取反馈</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="mt-6 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-2 px-6 rounded-full transition-all duration-300">
+                            加入社区 <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="relative h-64 rounded-xl overflow-hidden">
+                        <img src="https://s.coze.cn/image/fcrNJSC5pFU/" alt="设计师交流" class="absolute inset-0 w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 底部信息区 -->
+    <footer class="bg-indigo-950/90 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关于我们</h3>
+                    <p class="text-gray-400">AI智能服装专业导览平台，致力于连接服装产业各环节知识，提供专业易懂的内容。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">快速链接</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">智能推荐</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">虚拟试穿</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">搭配建议</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-pink-400 transition-colors">提供灵感</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">联系方式</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-center text-gray-400"><i class="fas fa-envelope mr-2"></i> contact@fashion-ai.com</li>
+                        <li class="flex items-center text-gray-400"><i class="fas fa-phone mr-2"></i> +86 400-123-4567</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 text-white">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-indigo-800 hover:bg-indigo-700 flex items-center justify-center text-white transition-colors">
+                            <i class="fab fa-douyin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 AI服装导览平台. 保留所有权利.</p>
+                <div class="text-gray-500 text-sm">
+                    <!-- <span>created by <a href="https://space.coze.cn" class="text-pink-400 hover:text-pink-300">coze space</a></span>
+                    <span class="mx-2">|</span>
+                    <span>页面内容均由 AI 生成，仅供参考</span> -->
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 如果是移动端菜单，点击后关闭菜单
+                    if (window.innerWidth < 768) {
+                        document.getElementById('mobileMenu').classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // 滚动时改变导航栏样式
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+                nav.classList.add('bg-indigo-950');
+            } else {
+                nav.classList.remove('shadow-lg');
+                nav.classList.remove('bg-indigo-950');
+            }
+        });
+    </script>
+</body>
+</html>
